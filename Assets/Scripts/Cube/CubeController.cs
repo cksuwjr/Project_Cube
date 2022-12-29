@@ -12,10 +12,17 @@ public class CubeController : MonoBehaviour
 	[SerializeField] private LayerMask WhatIsGround;                          // A mask determining what is ground to the character
 	[SerializeField] private Transform GroundCheck;                           // A position marking where to check if the player is grounded.
 
+
 	const float GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
 	private bool isGround;            // Whether or not the player is grounded.
 	private Rigidbody rb ;
 	private Vector3 m_Velocity = Vector3.zero;
+
+
+	//
+	
+
+	//
 
 	[Header("Events")]
 	[Space]
@@ -28,6 +35,7 @@ public class CubeController : MonoBehaviour
 
 	private void Awake()
 	{
+		//Cube = transform.GetChild(0).gameObject;
 		rb = GetComponent<Rigidbody>();
 
 		if (OnLandEvent == null)
@@ -51,17 +59,19 @@ public class CubeController : MonoBehaviour
 					OnLandEvent.Invoke();
 			}
 		}
+
+		
 	}
 
 
 	public void Move(float dirAngle, float speed, bool jump)
 	{
-
 		//only control the player if grounded or airControl is turned on
 		if (isGround)
 		{
 			
 		}
+		// 큐브 회전
 		rb.rotation = Quaternion.Euler(0, dirAngle, 0);
 
 		// 각도에 따라 움직임xz 구해서 가기
@@ -95,13 +105,9 @@ public class CubeController : MonoBehaviour
 			rb.AddForce(new Vector2(0f, JumpForce));
 		}
 	}
-
-
-	private void Flip()
-	{
-		// Multiply the player's x local scale by -1.
-		Vector3 theScale = transform.localScale;
-		theScale.x *= -1;
-		transform.localScale = theScale;
-	}
+	public void Attack(string AttackType)
+    {
+		if (AttackType == "BasicAttack")
+			GetComponent<Attack>().BasicAttack();
+    }
 }
