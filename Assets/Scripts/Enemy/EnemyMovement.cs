@@ -34,13 +34,20 @@ public class EnemyMovement : MonoBehaviour
         float verticalDir = 0;
 
 
-        // Input
-        
-        if (TargetTransform.position.x < MyTransform.position.x + 0.15 && TargetTransform.position.x > MyTransform.position.x - 0.15) { horizontalDir = 0; } else { horizontalDir = TargetTransform.position.x < MyTransform.position.x ? -1 : 1; }
-        if (TargetTransform.position.z < MyTransform.position.z + 0.15 && TargetTransform.position.z > MyTransform.position.z - 0.15) { verticalDir = 0; } else { verticalDir = TargetTransform.position.z < MyTransform.position.z ? -1 : 1; }
+        // Input horizon
+        float stopRange = 0.25f;
+        if (TargetTransform.position.x < MyTransform.position.x + stopRange && TargetTransform.position.x > MyTransform.position.x - stopRange) 
+            horizontalDir = 0; 
+        else 
+            horizontalDir = TargetTransform.position.x < MyTransform.position.x ? -1 : 1;
+        // Input vertical
+        if (TargetTransform.position.z < MyTransform.position.z + stopRange && TargetTransform.position.z > MyTransform.position.z - stopRange) 
+            verticalDir = 0;
+        else 
+            verticalDir = TargetTransform.position.z < MyTransform.position.z ? -1 : 1;
         
 
-        // Angle
+        // Angle by input
         int HorizonAngle = 0;
         if (horizontalDir == 1)
             HorizonAngle = 90;
