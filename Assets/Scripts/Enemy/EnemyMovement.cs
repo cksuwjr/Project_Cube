@@ -13,6 +13,10 @@ public class EnemyMovement : MonoBehaviour
 
     public GameObject Target;
 
+    // Attack
+    public EnemyAttack attack;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,7 +80,8 @@ public class EnemyMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        controller.Move(MoveDir, MoveIndex * Time.fixedDeltaTime, Jump);
+        if (attack.isAttackAble)
+            controller.Move(MoveDir, MoveIndex * Time.fixedDeltaTime, Jump);
         Jump = false;
     }
 }
