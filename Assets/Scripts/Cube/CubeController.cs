@@ -122,9 +122,11 @@ public class CubeController : MonoBehaviour
 			rb.AddForce(new Vector2(0f, JumpForce));
 		}
 	}
-	public void Attack(Vector3 attacksize, float attackdamage = -1)
+	public void Attack(Vector3 attacksize, float attackdamage = -1, bool isFront = true) // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
     {
-		Collider[] colliders = Physics.OverlapBox(AttackPos.position, attacksize, transform.rotation, WhatIsEnemy);
+		Vector3 attackPos;
+		attackPos = isFront ? AttackPos.position + new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z) : AttackPos.position - new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
+		Collider[] colliders = Physics.OverlapBox(attackPos, attacksize / 2, transform.rotation, WhatIsEnemy);
 		for (int i = 0; i < colliders.Length; i++)
 		{
 			if (colliders[i].isTrigger) continue; // isTrigger가 true인 collider는 감지 제외(collider가 여럿인 개체의 중복적용 방지위한 임시방책)
@@ -185,16 +187,19 @@ public class CubeController : MonoBehaviour
 
 		// 무적
 		GetComponent<Hit>().isHittable = false;
-
-		// 공격 및 이동
-		Attack(new Vector3(1, 1, 8), 9999);
+		Vector3 nowPos = transform.position;
+		
 
 		direction = new Vector3(direction.x, 0, direction.z);
-		rb.velocity = direction * 50f + new Vector3(0, rb.velocity.y, 0);
+		rb.velocity = direction * 80f + new Vector3(0, rb.velocity.y, 0);
 
-		Debug.Log(direction * 500f + new Vector3(0, rb.velocity.y, 0));
+		
 	
 		yield return new WaitForSeconds(0.05f);
+		Vector3 afterPos = transform.position;
+
+		// 지나간 공간에 존재하는 적 공격
+		Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), GetComponent<Status>().AttackPower * 1.25f + 20, false);
 
 		// 중력 및 충돌 재활성화
 		GetComponent<Hit>().isHittable = true;
@@ -225,7 +230,7 @@ public class CubeController : MonoBehaviour
 		
 		if (mystat.Hp < 0)
 			Die();
-		Debug.Log(gameObject.name + "가 " + damage + "의 피해를 입었습니다! 남은체력: " + mystat.Hp);
+		//Debug.Log(gameObject.name + "가 " + damage + "의 피해를 입었습니다! 남은체력: " + mystat.Hp);
 	}
 	public void GetHeal(float heal)
     {
@@ -236,7 +241,7 @@ public class CubeController : MonoBehaviour
 
 		if (mystat.Hp > mystat.MaxHp) // 체력 제한
 			mystat.Hp = mystat.MaxHp;
-		Debug.Log(gameObject.name + "가 " + heal + "의 체력을 회복하였습니다! 현재체력: " + mystat.Hp);
+		//Debug.Log(gameObject.name + "가 " + heal + "의 체력을 회복하였습니다! 현재체력: " + mystat.Hp);
 	}
 	public void Die()
     {
@@ -259,12 +264,9 @@ public class CubeController : MonoBehaviour
 
 		
 	}
-    private void OnDrawGizmos()
-    {
-		//Physics.BoxCast(AttackPos.position, new Vector3(1, 1, 1), new Vector3(0,0,1), out RaycastHit hit, transform.rotation, 10);
-		Gizmos.color = Color.green;
-		
-		
-		Gizmos.DrawCube(AttackPos.position, new Vector3(1 * direction.x, 1, 10 * direction.z));
-	}
+ //   private void OnDrawGizmos()
+ //   {
+	//	Gizmos.color = Color.green;
+	//	Gizmos.DrawCube(AttackPos.position, new Vector3(1 * direction.x, 1, 10 * direction.z));
+	//}
 }
