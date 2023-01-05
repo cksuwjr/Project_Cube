@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CAM : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class CAM : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = Target.transform.position;
+        if (Target)
+            transform.position = Target.transform.position;
+
+        if (Input.GetKeyDown(KeyCode.F5))
+            SceneManager.LoadScene("SampleScene");
     }
 }

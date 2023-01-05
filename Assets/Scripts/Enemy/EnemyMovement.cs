@@ -16,12 +16,16 @@ public class EnemyMovement : MonoBehaviour
     // Attack
     public EnemyAttack attack;
 
+    // UnderCheck
+    [SerializeField] private Transform Undercheck;
+    [SerializeField] private LayerMask WhatisGround;
 
     // Start is called before the first frame update
     void Start()
     {
         if (Target == null)
-            Target = GameObject.Find("Cube").gameObject;
+            if (GameObject.Find("Cube"))
+                Target = GameObject.Find("Cube").gameObject;
     }
 
     // Update is called once per frame
@@ -40,15 +44,28 @@ public class EnemyMovement : MonoBehaviour
 
         // Input horizon
         float stopRange = 0.25f;
-        if (TargetTransform.position.x < MyTransform.position.x + stopRange && TargetTransform.position.x > MyTransform.position.x - stopRange) 
-            horizontalDir = 0; 
-        else 
+        
+        if ((TargetTransform.position.x < MyTransform.position.x + stopRange && TargetTransform.position.x > MyTransform.position.x - stopRange))
+            horizontalDir = 0;
+        else
+        {
             horizontalDir = TargetTransform.position.x < MyTransform.position.x ? -1 : 1;
+            // 해당방향에 지면이 있나 체크 이후 없으면 해당방향 움직이지 않음 (가로)
+            Collider[] colliders = Physics.OverlapBox(transform.position + Vector3.down + new Vector3(horizontalDir, 0, 0), new Vector3(0.5f, 1, 0.5f), Quaternion.identity, WhatisGround);
+            if (colliders.Length == 0)
+                horizontalDir = 0;
+        }
         // Input vertical
-        if (TargetTransform.position.z < MyTransform.position.z + stopRange && TargetTransform.position.z > MyTransform.position.z - stopRange) 
+        if ((TargetTransform.position.z < MyTransform.position.z + stopRange && TargetTransform.position.z > MyTransform.position.z - stopRange))
             verticalDir = 0;
-        else 
+        else
+        {
             verticalDir = TargetTransform.position.z < MyTransform.position.z ? -1 : 1;
+            // 해당방향에 지면이 있나 체크 이후 없으면 해당방향 움직이지 않음 (세로)
+            Collider[] colliders = Physics.OverlapBox(transform.position + Vector3.down + new Vector3(0, 0, verticalDir), new Vector3(0.5f, 1, 0.5f), Quaternion.identity, WhatisGround);
+            if (colliders.Length == 0)
+                verticalDir = 0;
+        }
         
 
         // Angle by input
@@ -77,11 +94,20 @@ public class EnemyMovement : MonoBehaviour
 
         // Jump 유무
 
+
+        if (Target == null) { MoveIndex = 0; Jump = true; }
+
     }
     private void FixedUpdate()
     {
+        
+        // Move
         if (attack.isAttackAble)
             controller.Move(MoveDir, MoveIndex * Time.fixedDeltaTime, Jump);
         Jump = false;
+
+
+
+        //////////////////////
     }
 }

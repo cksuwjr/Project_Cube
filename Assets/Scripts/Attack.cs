@@ -16,17 +16,31 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && gameObject.name == "Cube") 
+        if (Input.GetKeyDown(KeyCode.A)) 
             attack = "BasicAttack";
+        if (Input.GetKeyDown(KeyCode.Q))
+            attack = "Q";
+        if (Input.GetKeyDown(KeyCode.W))
+            attack = "W";
+        if (Input.GetKeyDown(KeyCode.E))
+            attack = "E";
+        if (Input.GetKeyDown(KeyCode.R))
+            attack = "R";
     }
     private void FixedUpdate()
     {
         if (attack == null || attack == "") return;
-        
+
         if (attack == "BasicAttack")
             controller.Attack(new Vector3(1, 1, 1));
-
-
+        else if (attack == "Q")
+            controller.Q();
+        else if (attack == "W")
+            controller.W();
+        else if (attack == "E")
+            controller.E();
+        else if (attack == "R")
+            controller.R();
         attack = "";
     }
     public float CalcDamage(GameObject attacker, GameObject deffender)
