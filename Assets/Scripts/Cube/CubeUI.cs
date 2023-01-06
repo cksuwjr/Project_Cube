@@ -11,12 +11,18 @@ public class CubeUI : MonoBehaviour
     public float LiveTime = 0f;
     public Text dietext;
 
+    // StageTurn
+    public Text stagetext;
+
+
     private void Awake()
     {
         if (PlayerCube == null) PlayerCube = GameObject.Find("Cube").GetComponent<Status>();
         if (HpBar == null) HpBar = transform.GetChild(1).GetComponent<Image>();
 
         dietext.text = "";
+
+        PopupStageUI("Stage 1");
     }
     void Hp_Update(float var)
     {
@@ -34,7 +40,7 @@ public class CubeUI : MonoBehaviour
 
     public void PopupDieUI()
     {
-        string text = "당신은 죽었습니다!\n\n";
+        string text = "\n\n";
         /*
         if (LiveTime < 10)
             text += "아니 뭐함?? 자살 ㄴㄴ요;;";
@@ -51,5 +57,23 @@ public class CubeUI : MonoBehaviour
         */
         text += "버틴 시간: {0:0.00}초";
         dietext.text = string.Format(text, LiveTime);
+    }
+    public void PopupStageUI(string text)
+    {
+        stagetext.text = text;
+        StartCoroutine("Hide");
+    }
+    IEnumerator Hide()
+    {
+        RectTransform pos = stagetext.GetComponent<RectTransform>();
+        pos.localPosition = new Vector3(0,5,0);
+        float timer = 0;
+        while(timer < 1.2f)
+        {
+            pos.localPosition = new Vector3(0, 5 + timer, 0);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        stagetext.text = "";
     }
 }

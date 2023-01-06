@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7850141973763630933}
   - component: {fileID: 4293875685498326227}
   - component: {fileID: 8733346848457797331}
+  - component: {fileID: 7242241562913751197}
   m_Layer: 5
   m_Name: DamageSkin
   m_TagString: Untagged
@@ -100,6 +101,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7242241562913751197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643027433382092732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2ecf166594e4cf47929f522acd4065e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8523624415519589168
 GameObject:
   m_ObjectHideFlags: 0

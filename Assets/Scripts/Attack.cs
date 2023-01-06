@@ -45,7 +45,10 @@ public class Attack : MonoBehaviour
     }
     public float CalcDamage(GameObject attacker, GameObject deffender)
     {
-        return attacker.GetComponent<Status>().AttackPower - deffender.GetComponent<Status>().DeffensePower;
+        
+        return attacker.GetComponent<Status>().AttackPower - (attacker.GetComponent<Status>().AttackPower * (deffender.GetComponent<Status>().DeffensePower / (100 + deffender.GetComponent<Status>().DeffensePower)));
+
+
     }
     public bool isAttackTarget(GameObject deffender)
     {

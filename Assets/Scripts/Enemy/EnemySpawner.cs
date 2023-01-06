@@ -6,6 +6,8 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject Enemy;
     public GameObject Boss;
+
+    public CubeUI cubeUI;
     private enum Mode {
         StageMode,
         InfinityMode,
@@ -58,7 +60,7 @@ public class EnemySpawner : MonoBehaviour
             }
             else
             {
-                if (Random.Range(Stage, 100) > 95)
+                if (Random.Range(Stage, 100) > 95 && Stage > 2)
                 {
                     GameObject spawned = Instantiate(Boss, transform.position, Quaternion.identity);
                     spawned.SetActive(true);
@@ -81,6 +83,8 @@ public class EnemySpawner : MonoBehaviour
                 Stage++;
                 count = 0;
                 Debug.Log("현재 스테이지 " + (Stage + 1) + ", 쉬는시간 10초");
+                if (cubeUI)
+                    cubeUI.PopupStageUI("Stage " + (Stage + 1));
                 Invoke("Spawn", 10);
             }
         }

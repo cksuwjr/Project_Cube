@@ -97,6 +97,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (Target == null) { MoveIndex = 0; Jump = true; }
 
+        
     }
     private void FixedUpdate()
     {
