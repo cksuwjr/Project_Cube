@@ -13,6 +13,10 @@ public class CAM : MonoBehaviour
         if (Target)
             transform.position = Target.transform.position;
 
+        
+    }
+    private void Update()
+    {
         if (Input.GetKeyDown(KeyCode.F5))
             SceneManager.LoadScene("SampleScene");
     }

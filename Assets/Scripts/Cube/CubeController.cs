@@ -89,7 +89,8 @@ public class CubeController : MonoBehaviour
 			
 		}
 		// 큐브 회전
-		rb.rotation = Quaternion.Euler(0, dirAngle, 0);
+		if(speed != 0)
+			rb.rotation = Quaternion.Euler(0, dirAngle, 0);
 
 		// 각도에 따라 움직임xz 구해서 가기
 		if (dirAngle == 0)
@@ -114,18 +115,26 @@ public class CubeController : MonoBehaviour
 		if (rb.useGravity) // 중력 적용 안될때는 움직임 적용 안 하려고 넣음
 			rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref m_Velocity, MovementSmoothing);
 
-		// If the player should jump...
-		if (isGround && jump)
+		
+
+			// If the player should jump...
+			if (isGround && jump)
 		{
 			// Add a vertical force to the player.
 			isGround = false;
 			rb.AddForce(new Vector2(0f, JumpForce));
 		}
 	}
-	public void Attack(Vector3 attacksize, float attackdamage = -1, bool isFront = true) // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
+	public void Attack(Vector3 attacksize, float attackdamage = -1, string isFront = "Front", string CC = "None", float howmuch = 0) // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
     {
 		Vector3 attackPos;
-		attackPos = isFront ? AttackPos.position + new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z) : AttackPos.position - new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
+		if (isFront == "Front")
+			attackPos = AttackPos.position + new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
+		else if(isFront == "Back")
+			attackPos = AttackPos.position - new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
+        else // Middle
+			attackPos = AttackPos.position;
+		//attackPos = isFront ? AttackPos.position + new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z) : AttackPos.position - new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
 		Collider[] colliders = Physics.OverlapBox(attackPos, attacksize / 2, transform.rotation, WhatIsEnemy);
 		for (int i = 0; i < colliders.Length; i++)
 		{
@@ -149,7 +158,14 @@ public class CubeController : MonoBehaviour
 						Damage = attackdamage;
 
 					if (hit.isHitTarget())
-                        hit.OnHit(gameObject, Damage, false);
+					{
+						hit.OnHit(gameObject, Damage, false);
+						if (CC == "AirBorned")
+						{
+							Deffender.GetComponent<CubeController>().AirBorned(howmuch);
+							Debug.Log(Deffender.name + "에어본당함!");
+						}
+					}
                 }
                 else
                     Debug.Log("공격대상이 Hit 컴포넌트를 소유하지 않았습니다.");
@@ -175,12 +191,11 @@ public class CubeController : MonoBehaviour
 
 	public void E()
 	{
-		StopCoroutine("Cast_E");
-		StartCoroutine("Cast_E");
-		Debug.Log("E");
+		Skill("Cast_E");
 	}
 	IEnumerator Cast_E()
     {
+		transform.rotation = Quaternion.Euler(Vector3.zero);
 		// 중력 및 충돌 차단
 		rb.useGravity = false;
 		Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
@@ -199,22 +214,54 @@ public class CubeController : MonoBehaviour
 		Vector3 afterPos = transform.position;
 
 		// 지나간 공간에 존재하는 적 공격
-		Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), GetComponent<Status>().AttackPower * 1.25f + 20, false);
+		Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), GetComponent<Status>().AttackPower * 1.25f + 20, "Back", "AirBorned", 500f);
+
+		// 도착후 인근 띄우며 공격
+		//Attack(new Vector3(3, 1, 3), GetComponent<Status>().AttackPower, "Middle", "AirBorned", 500f);
 
 		// 중력 및 충돌 재활성화
+		rb.useGravity = true;
+
+		yield return new WaitForSeconds(0.15f);
 		GetComponent<Hit>().isHittable = true;
 		Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
 		
-		rb.useGravity = true;
 	}
 
 	public void R()
 	{
-		Debug.Log("R");
+		Skill("Cast_R", "Cast_E");
 	}
 	IEnumerator Cast_R()
 	{
-		yield return null;
+		float timer = 0f;
+		while(timer < 3)
+        {
+			Attack(new Vector3(6f, 1, 6f), GetComponent<Status>().AttackPower * 0.15f + 15f, "Middle");
+
+			transform.Rotate(new Vector3(0, 30, 0));
+			timer += 0.05f;
+			yield return new WaitForSeconds(0.05f);
+			transform.Rotate(new Vector3(0, 30, 0));
+			timer += 0.05f;
+			yield return new WaitForSeconds(0.05f);
+		}
+		transform.rotation = Quaternion.Euler(Vector3.zero);
+		Debug.Log("3초 지남");
+	}
+	void Skill(string Cast_What = null, string Except = null)
+    {
+		if (Except != "Cast_Q")
+			StopCoroutine("Cast_Q");
+		if (Except != "Cast_W")
+			StopCoroutine("Cast_W");
+		if (Except != "Cast_E")
+			StopCoroutine("Cast_E");
+		if (Except != "Cast_R")
+			StopCoroutine("Cast_R");
+
+		if (Cast_What != null)
+			StartCoroutine(Cast_What);
 	}
 
 	public void PowerUp(float ad)
@@ -252,8 +299,8 @@ public class CubeController : MonoBehaviour
 		}
 		if (GameObject.Find("Cube"))
 		{
-			GameObject.Find("Cube").GetComponent<CubeController>().GetHeal(100);
-			GameObject.Find("Cube").GetComponent<CubeController>().PowerUp(10);
+			GameObject.Find("Cube").GetComponent<CubeController>().GetHeal(50);
+			GameObject.Find("Cube").GetComponent<CubeController>().PowerUp(3);
 		}
 		Destroy(gameObject);
     }
@@ -264,6 +311,11 @@ public class CubeController : MonoBehaviour
 
 		
 	}
+	public void AirBorned(float howmuch)
+    {
+		rb.AddForce(new Vector2(0, howmuch));
+    }
+
  //   private void OnDrawGizmos()
  //   {
 	//	Gizmos.color = Color.green;
