@@ -37,6 +37,7 @@ public class CubeController : MonoBehaviour
 	[SerializeField] private LayerMask WhatIsEnemy;
 	[SerializeField] private Transform AttackPos;
 
+	[SerializeField] private GameObject Bullet;
 	// UI
 	[SerializeField] private CubeUI myui;
 
@@ -60,8 +61,6 @@ public class CubeController : MonoBehaviour
 		bool wasGrounded = isGround;
 		isGround = false;
 
-		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
 		Collider[] colliders = Physics.OverlapSphere(GroundCheck.position, GroundedRadius, WhatIsGround);
 		for (int i = 0; i < colliders.Length; i++)
 		{
@@ -72,10 +71,6 @@ public class CubeController : MonoBehaviour
 					OnLandEvent.Invoke();
 			}
 		}
-
-
-
-
 		// self Distriction(제한조건)
 		SelfDistriction();
 	}
@@ -93,22 +88,14 @@ public class CubeController : MonoBehaviour
 			rb.rotation = Quaternion.Euler(0, dirAngle, 0);
 
 		// 각도에 따라 움직임xz 구해서 가기
-		if (dirAngle == 0)
-			direction = new Vector3(0, rb.velocity.y, 1);
-		else if (dirAngle == 45)
-			direction = new Vector3(1, rb.velocity.y, 1);
-		else if (dirAngle == 90)
-			direction = new Vector3(1, rb.velocity.y, 0);
-		else if (dirAngle == 135)
-			direction = new Vector3(1, rb.velocity.y, -1);
-		else if (dirAngle == 180)
-			direction = new Vector3(0, rb.velocity.y, -1);
-		else if (dirAngle == 225)
-			direction = new Vector3(-1, rb.velocity.y, -1);
-		else if (dirAngle == 270)
-			direction = new Vector3(-1, rb.velocity.y, 0);
-		else if (dirAngle == 315)
-			direction = new Vector3(-1, rb.velocity.y, 1);
+		if (dirAngle == 0)        direction = new Vector3(0, rb.velocity.y, 1);
+		else if (dirAngle == 45)  direction = new Vector3(1, rb.velocity.y, 1);
+		else if (dirAngle == 90)  direction = new Vector3(1, rb.velocity.y, 0);
+		else if (dirAngle == 135) direction = new Vector3(1, rb.velocity.y, -1);
+		else if (dirAngle == 180) direction = new Vector3(0, rb.velocity.y, -1);
+		else if (dirAngle == 225) direction = new Vector3(-1, rb.velocity.y, -1);
+		else if (dirAngle == 270) direction = new Vector3(-1, rb.velocity.y, 0);
+		else if (dirAngle == 315) direction = new Vector3(-1, rb.velocity.y, 1);
 
 		Vector3 targetVelocity = new Vector3(direction.x * speed * 10f, direction.y, direction.z * speed * 10f);
 		// And then smoothing it out and applying it to the character
@@ -117,8 +104,8 @@ public class CubeController : MonoBehaviour
 
 		
 
-			// If the player should jump...
-			if (isGround && jump)
+		// If the player should jump...
+		if (isGround && jump)
 		{
 			// Add a vertical force to the player.
 			isGround = false;
@@ -171,28 +158,40 @@ public class CubeController : MonoBehaviour
                     Debug.Log("공격대상이 Hit 컴포넌트를 소유하지 않았습니다.");
 		}
 	}
-	public void Q()
-    {
-		Debug.Log("Q");
-    }
+	public void Q() { Skill("Cast_Q"); }
+	public void W() { Skill("Cast_W"); }
+	public void E() { Skill("Cast_E"); }
+	public void R() { Skill("Cast_R", "Cast_E"); }
 	IEnumerator Cast_Q()
 	{
+		Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(GetComponent<Status>().AttackPower * 0.5f, 30, 0.8f);
+		
 		yield return null;
 	}
 
-	public void W()
-	{
-		Debug.Log("W");
-	}
 	IEnumerator Cast_W()
 	{
+		if (!isGround)
+        {
+			float Airbornforce = 100 * transform.position.y;
+			rb.MovePosition(new Vector3(transform.position.x, 1, transform.position.z));
+			GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+			for (int i = 0; i < enemys.Length; i++)
+			{
+				CubeController enemycontroller = enemys[i].GetComponent<CubeController>();
+				if (enemycontroller.isGround)
+				{
+					enemycontroller.AirBorned(Airbornforce);
+					enemycontroller.GetDamage(1);
+				}
+			}
+		}
+		
+
 		yield return null;
 	}
 
-	public void E()
-	{
-		Skill("Cast_E");
-	}
+	
 	IEnumerator Cast_E()
     {
 		transform.rotation = Quaternion.Euler(Vector3.zero);
@@ -228,40 +227,33 @@ public class CubeController : MonoBehaviour
 		
 	}
 
-	public void R()
-	{
-		Skill("Cast_R", "Cast_E");
-	}
+	
 	IEnumerator Cast_R()
 	{
 		float timer = 0f;
-		while(timer < 3)
+		int count = 0;
+		while(timer < 2.5f)
         {
-			Attack(new Vector3(6f, 1, 6f), GetComponent<Status>().AttackPower * 0.15f + 15f, "Middle");
-
-			transform.Rotate(new Vector3(0, 30, 0));
+			if (count++ > 2)
+			{
+				Attack(new Vector3(6f, 1, 6f), 25f, "Middle");
+				count = 0;
+			}
+			transform.Rotate(new Vector3(0, 225, 0));
 			timer += 0.05f;
 			yield return new WaitForSeconds(0.05f);
-			transform.Rotate(new Vector3(0, 30, 0));
-			timer += 0.05f;
-			yield return new WaitForSeconds(0.05f);
+			Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(GetComponent<Status>().AttackPower * (Random.Range(0.185f, 0.325f)), 45f, 0.15f);
 		}
 		transform.rotation = Quaternion.Euler(Vector3.zero);
-		Debug.Log("3초 지남");
 	}
 	void Skill(string Cast_What = null, string Except = null)
     {
-		if (Except != "Cast_Q")
-			StopCoroutine("Cast_Q");
-		if (Except != "Cast_W")
-			StopCoroutine("Cast_W");
-		if (Except != "Cast_E")
-			StopCoroutine("Cast_E");
-		if (Except != "Cast_R")
-			StopCoroutine("Cast_R");
+		if (Except != "Cast_Q") StopCoroutine("Cast_Q");
+		if (Except != "Cast_W") StopCoroutine("Cast_W");
+		if (Except != "Cast_E") StopCoroutine("Cast_E");
+		if (Except != "Cast_R") StopCoroutine("Cast_R");
 
-		if (Cast_What != null)
-			StartCoroutine(Cast_What);
+		if (Cast_What != null) StartCoroutine(Cast_What);
 	}
 
 	public void PowerUp(float ad)
