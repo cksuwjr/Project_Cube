@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 15949358}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -270,6 +270,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   AttackPos: {fileID: 1579517688}
+  Bullet: {fileID: 0}
   myui: {fileID: 0}
 --- !u!114 &15949348
 MonoBehaviour:
@@ -793,6 +794,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   AttackPos: {fileID: 1167852398}
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
   myui: {fileID: 1794287368}
 --- !u!54 &83842455
 Rigidbody:
@@ -2707,7 +2709,7 @@ GameObject:
   - component: {fileID: 1000453295}
   m_Layer: 6
   m_Name: Boss
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2830,6 +2832,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   AttackPos: {fileID: 1053877973}
+  Bullet: {fileID: 0}
   myui: {fileID: 0}
 --- !u!65 &1000453302
 BoxCollider:
