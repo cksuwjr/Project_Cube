@@ -12,31 +12,59 @@ public class EnemyAttack : Attack
     //string attack = "";
     public bool isEnemyNear = false;
     public bool isAttackAble = true;
+    Renderer render;
+    Color myColor;
 
-    void Start()
+    public bool isShootableEnemy = false;
+
+    private void Start()
     {
-        
+        render = GetComponent<Renderer>();
+        myColor = render.material.color;
     }
-    void Update()
-    {
-        if (isEnemyNear && isAttackAble)
-            attack = "BasicAttack";
-    }
-    IEnumerator AttackDelay()
+    IEnumerator AttackDelay(float time)
     {
         isAttackAble = false;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(time);
         isAttackAble = true;
+        render.material.color = myColor;
+    }
+    IEnumerator AttackStartDelay(float time)
+    {
+        isAttackAble = false;
+        
+        render.material.color = myColor + new Color(0.3f,-0.15f, -0.15f);
+        yield return new WaitForSeconds(time);
+        StartCoroutine(AttackDelay(1));
+        controller.Attack(new Vector3(1, 1, 1));
+    }
+    IEnumerator StartShooting(float time, float delay)
+    {
+        isAttackAble = false;
+        yield return new WaitForSeconds(time);
+        StartCoroutine(AttackDelay(delay));
+        controller.Skill("Cast_Q");
     }
     private void FixedUpdate()
     {
+        if (isShootableEnemy)
+            if (move.isEnemybeInStraightLine && isAttackAble && !controller.IsBinded && controller.IsActable)
+                attack = "ShootingAttack";
+
+        if (isEnemyNear && isAttackAble && !controller.IsBinded && controller.IsActable)
+            attack = "BasicAttack";
+
+
         if (attack == null || attack == "") return;
 
-        if (attack == "BasicAttack")
+        if (attack == "BasicAttack" && isAttackAble)
         {
-            StartCoroutine(AttackDelay());
-            controller.Attack(new Vector3(1, 1, 1));
+            StartCoroutine(AttackStartDelay(0.45f));
         }
+        
+        if (isShootableEnemy)
+            if (attack == "ShootingAttack" && isAttackAble)
+                StartCoroutine(StartShooting(0.3f, 0.075f));
 
         attack = "";
     }

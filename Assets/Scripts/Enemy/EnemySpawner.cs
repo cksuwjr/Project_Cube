@@ -82,7 +82,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 Stage++;
                 count = 0;
-                Debug.Log("현재 스테이지 " + (Stage + 1) + ", 쉬는시간 0초");
+                Debug.Log("현재 스테이지 " + (Stage + 1));
                 if (cubeUI)
                     cubeUI.PopupStageUI("Stage " + (Stage + 1));
                 Invoke("Spawn", 0);

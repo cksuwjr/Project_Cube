@@ -28,8 +28,10 @@ public class CubeController : MonoBehaviour
 
 	public UnityEvent OnLandEvent;
 
-	// Status
+	// CC
 	
+	public bool IsBinded = false;
+	public bool IsActable = true;
 
 
 	// Attack Part
@@ -38,6 +40,9 @@ public class CubeController : MonoBehaviour
 	[SerializeField] private Transform AttackPos;
 
 	[SerializeField] private GameObject Bullet;
+
+	[SerializeField] private GameObject RecentAttacker;
+
 	// UI
 	[SerializeField] private CubeUI myui;
 
@@ -164,7 +169,7 @@ public class CubeController : MonoBehaviour
 	public void R() { Skill("Cast_R", "Cast_E"); }
 	IEnumerator Cast_Q()
 	{
-		Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(GetComponent<Status>().AttackPower * 0.5f, 30, 0.8f);
+		Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(gameObject, GetComponent<Status>().AttackPower * 0.5f, 30, 0.8f);
 		
 		yield return null;
 	}
@@ -182,7 +187,7 @@ public class CubeController : MonoBehaviour
 				if (enemycontroller.isGround)
 				{
 					enemycontroller.AirBorned(Airbornforce);
-					enemycontroller.GetDamage(1);
+					enemycontroller.GetDamage(1, gameObject);
 				}
 			}
 		}
@@ -242,11 +247,11 @@ public class CubeController : MonoBehaviour
 			transform.Rotate(new Vector3(0, 225, 0));
 			timer += 0.05f;
 			yield return new WaitForSeconds(0.05f);
-			Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(GetComponent<Status>().AttackPower * (Random.Range(0.185f, 0.325f)), 45f, 0.15f);
+			Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(gameObject, GetComponent<Status>().AttackPower * (Random.Range(0.185f, 0.325f)), 45f, 0.15f);
 		}
 		transform.rotation = Quaternion.Euler(Vector3.zero);
 	}
-	void Skill(string Cast_What = null, string Except = null)
+	public void Skill(string Cast_What = null, string Except = null)
     {
 		if (Except != "Cast_Q") StopCoroutine("Cast_Q");
 		if (Except != "Cast_W") StopCoroutine("Cast_W");
@@ -260,13 +265,15 @@ public class CubeController : MonoBehaviour
     {
 		GetComponent<Status>().AttackPower += ad;
     }
-	public void GetDamage(float damage)
+	public void GetDamage(float damage, GameObject fromwho = null)
     {
 		Status mystat = GetComponent<Status>();
 
 		mystat.Hp -= damage;
 		GetComponent<DamageSpawner>().Spawn(-damage);
-		
+
+		RecentAttacker = fromwho;
+
 		if (mystat.Hp < 0)
 			Die();
 		//Debug.Log(gameObject.name + "가 " + damage + "의 피해를 입었습니다! 남은체력: " + mystat.Hp);
@@ -289,10 +296,10 @@ public class CubeController : MonoBehaviour
 			myui.gameObject.SetActive(false);
 			myui.PopupDieUI();
 		}
-		if (GameObject.Find("Cube"))
+		if (RecentAttacker)
 		{
-			GameObject.Find("Cube").GetComponent<CubeController>().GetHeal(50);
-			GameObject.Find("Cube").GetComponent<CubeController>().PowerUp(3);
+			RecentAttacker.GetComponent<CubeController>().GetHeal(50);
+			RecentAttacker.GetComponent<CubeController>().PowerUp(3);
 		}
 		Destroy(gameObject);
     }
@@ -303,9 +310,35 @@ public class CubeController : MonoBehaviour
 
 		
 	}
+	
+	// CC기 적용
+
+	IEnumerator CC(float time)
+	{
+		IsBinded = true;
+		yield return new WaitForSeconds(time);
+		IsBinded = false;
+	}
+
+	IEnumerator ActMumchit(float time)
+	{
+		IsActable = false;
+		yield return new WaitForSeconds(time);
+		IsActable = true;
+	}
+
 	public void AirBorned(float howmuch)
     {
 		rb.AddForce(new Vector2(0, howmuch));
+    }
+	public void KnockBack(GameObject fromwho, float howmuch)
+    {
+		StartCoroutine(CC(0.3f));
+
+		Vector3 dir = Vector3.zero;
+		try{ dir = (fromwho.transform.position - transform.position).normalized;} catch { }
+		transform.rotation = Quaternion.LookRotation(dir);
+		rb.velocity = new Vector3(-dir.x * howmuch, rb.velocity.y, -dir.z * howmuch);
     }
 
  //   private void OnDrawGizmos()

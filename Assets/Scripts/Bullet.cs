@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    GameObject Fromwho;
     Vector3 direction = Vector3.zero;
     float Speed = 0;
     float Damage = 0;
-    public void Tang(float damage, float speed = 15f, float DestroyTime = 5f)//Vector3 dir,
+    public void Tang(GameObject fromwho, float damage, float speed = 15f, float DestroyTime = 5f)//Vector3 dir,
     {
-        
+        Fromwho = fromwho;
         direction = transform.forward;
         Speed = speed;
         Damage = damage;
@@ -20,10 +21,14 @@ public class Bullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        if (other.gameObject != Fromwho)
         {
-            other.GetComponent<CubeController>().GetDamage(Damage);
-            Destroy(gameObject);
+            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            {
+                other.GetComponent<CubeController>().GetDamage(Damage, Fromwho);
+                other.GetComponent<CubeController>().KnockBack(Fromwho, 5f);
+                Destroy(gameObject);
+            }
         }
     }
 }

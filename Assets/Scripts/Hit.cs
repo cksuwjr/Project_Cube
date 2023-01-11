@@ -11,6 +11,6 @@ public class Hit : MonoBehaviour
     }
     public void OnHit(GameObject attacker, float damage, bool isCritical)
     {
-        GetComponent<CubeController>().GetDamage(damage);
+        GetComponent<CubeController>().GetDamage(damage, attacker);
     }
 }
