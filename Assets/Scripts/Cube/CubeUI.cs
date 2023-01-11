@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class CubeUI : MonoBehaviour
 {
     public Status PlayerCube;
@@ -14,7 +15,7 @@ public class CubeUI : MonoBehaviour
     // StageTurn
     public Text stagetext;
 
-
+    public Image DieFadeScreen;
     private void Awake()
     {
         if (PlayerCube == null) PlayerCube = GameObject.Find("Cube").GetComponent<Status>();
@@ -40,23 +41,25 @@ public class CubeUI : MonoBehaviour
 
     public void PopupDieUI()
     {
-        string text = "\n\n";
-        /*
+        string text = "";
+        
         if (LiveTime < 10)
-            text += "아니 뭐함?? 자살 ㄴㄴ요;;";
+            text += "자살은 몸에 좋지 않아요..";
         else if (LiveTime <= 30)
-            text += "겨우 {0}초뿐? 버티긴했네 ㅋㅋ";
+            text += "너무 빠르다..! {0: 0.00}초..?";
         else if (LiveTime <= 60)
-            text += "그래도 {0:0.00}초는 버텼네.. ㅋ";
+            text += "그래도 {0:0}초는 버텼네..";
         else if (LiveTime <= 180)
-            text += "{0:0.00}초.. 좀 적응했누?";
+            text += "{0:0.00}초.. 좀 적응했구만?";
         else if (LiveTime <= 360)
             text += "{0:0.00}초. 뭐야 집중이야 꼼수야";
         else
             text += "잘하누, {0:0.00}초 버텼다 야.";
-        */
+        
+        text += "\n\n\n\n";
         text += "버틴 시간: {0:0.00}초";
-        dietext.text = string.Format(text, LiveTime);
+        dietext.text = string.Format(text, LiveTime, LiveTime);
+        Invoke("ReStart", 3f);
     }
     public void PopupStageUI(string text)
     {
@@ -75,5 +78,22 @@ public class CubeUI : MonoBehaviour
             yield return null;
         }
         stagetext.text = "";
+    }
+    IEnumerator FadeIn(float wait, float time)
+    {
+        yield return new WaitForSeconds(wait);
+        DieFadeScreen.gameObject.SetActive(true);
+        float fade = 0f;
+        while (fade < time)
+        {
+            DieFadeScreen.color += new Color(0,0,0, 0.01f / time);
+            fade += 0.01f;
+            yield return new WaitForSeconds(0.01f);
+        }
+        SceneManager.LoadScene("Start");
+    }
+    void ReStart()
+    {
+        StartCoroutine(FadeIn(0, 1));
     }
 }

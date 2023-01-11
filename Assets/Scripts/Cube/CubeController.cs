@@ -155,7 +155,7 @@ public class CubeController : MonoBehaviour
 						if (CC == "AirBorned")
 						{
 							Deffender.GetComponent<CubeController>().AirBorned(howmuch);
-							Debug.Log(Deffender.name + "에어본당함!");
+							//Debug.Log(Deffender.name + "에어본당함!");
 						}
 					}
                 }
@@ -239,6 +239,9 @@ public class CubeController : MonoBehaviour
 		int count = 0;
 		while(timer < 2.5f)
         {
+			if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+				StopCoroutine("Cast_R");
+
 			if (count++ > 2)
 			{
 				Attack(new Vector3(6f, 1, 6f), 25f, "Middle");
@@ -293,7 +296,8 @@ public class CubeController : MonoBehaviour
     {
 		if (myui != null)
 		{
-			myui.gameObject.SetActive(false);
+			for(int i = 0; i < myui.transform.childCount; i++)
+				myui.transform.GetChild(i).gameObject.SetActive(false);
 			myui.PopupDieUI();
 		}
 		if (RecentAttacker)
