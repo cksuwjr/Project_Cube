@@ -12,9 +12,9 @@ public class DamageSpawner : MonoBehaviour
     {
         GameObject Spawned;
         if (index < 0)
-            Spawned = Instantiate(DamageSkin, transform.position, Quaternion.identity);
+            Spawned = Instantiate(DamageSkin, transform.position + new Vector3(0,1,0), Quaternion.identity);
         else
-            Spawned = Instantiate(HealSkin, transform.position, Quaternion.identity);
+            Spawned = Instantiate(HealSkin, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
         Spawned.GetComponentInChildren<Text>().text = ((int)index).ToString();
     }
     

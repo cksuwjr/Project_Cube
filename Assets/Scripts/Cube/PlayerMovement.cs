@@ -55,7 +55,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        controller.Move(MoveDir, MoveIndex * Time.fixedDeltaTime, Jump);
+        if (!controller.IsBinded && controller.IsActable)
+            controller.Move(MoveDir, MoveIndex * Time.fixedDeltaTime, Jump);
         Jump = false;
     }
 }

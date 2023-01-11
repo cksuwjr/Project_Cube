@@ -15,6 +15,7 @@ public class EnemyMovement : MonoBehaviour
 
     // Attack
     public EnemyAttack attack;
+    public bool isEnemybeInStraightLine;
 
     // UnderCheck
     [SerializeField] private Transform Undercheck;
@@ -41,12 +42,16 @@ public class EnemyMovement : MonoBehaviour
         float horizontalDir = 0;
         float verticalDir = 0;
 
+        isEnemybeInStraightLine = false;
 
         // Input horizon
         float stopRange = 0.25f;
-        
+
         if ((TargetTransform.position.x < MyTransform.position.x + stopRange && TargetTransform.position.x > MyTransform.position.x - stopRange))
+        {
             horizontalDir = 0;
+            isEnemybeInStraightLine = true;
+        }
         else
         {
             horizontalDir = TargetTransform.position.x < MyTransform.position.x ? -1 : 1;
@@ -57,7 +62,10 @@ public class EnemyMovement : MonoBehaviour
         }
         // Input vertical
         if ((TargetTransform.position.z < MyTransform.position.z + stopRange && TargetTransform.position.z > MyTransform.position.z - stopRange))
+        {
             verticalDir = 0;
+            isEnemybeInStraightLine = true;
+        }
         else
         {
             verticalDir = TargetTransform.position.z < MyTransform.position.z ? -1 : 1;
@@ -99,11 +107,12 @@ public class EnemyMovement : MonoBehaviour
 
         
     }
+    
     private void FixedUpdate()
     {
         
         // Move
-        if (attack.isAttackAble)
+        if (attack.isAttackAble && !controller.IsBinded && controller.IsActable)
             controller.Move(MoveDir, MoveIndex * Time.fixedDeltaTime, Jump);
         Jump = false;
 

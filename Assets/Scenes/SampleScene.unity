@@ -266,11 +266,13 @@ MonoBehaviour:
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
+  IsBinded: 0
+  IsActable: 1
   WhatIsEnemy:
     serializedVersion: 2
     m_Bits: 128
   AttackPos: {fileID: 1579517688}
-  Bullet: {fileID: 0}
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
   myui: {fileID: 0}
 --- !u!114 &15949348
 MonoBehaviour:
@@ -399,6 +401,7 @@ MonoBehaviour:
   Speed: 15
   Target: {fileID: 83842448}
   attack: {fileID: 15949357}
+  isEnemybeInStraightLine: 0
   Undercheck: {fileID: 1238561331}
   WhatisGround:
     serializedVersion: 2
@@ -446,6 +449,7 @@ MonoBehaviour:
   move: {fileID: 15949354}
   isEnemyNear: 0
   isAttackAble: 1
+  isShootableEnemy: 0
 --- !u!114 &15949358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -790,6 +794,8 @@ MonoBehaviour:
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
+  IsBinded: 0
+  IsActable: 1
   WhatIsEnemy:
     serializedVersion: 2
     m_Bits: 64
@@ -2745,6 +2751,7 @@ MonoBehaviour:
   move: {fileID: 1000453300}
   isEnemyNear: 0
   isAttackAble: 1
+  isShootableEnemy: 1
 --- !u!65 &1000453297
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2785,8 +2792,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _MaxHp: 5000
   _Hp: 5000
-  _AttackPower: 120
-  _DeffensePower: 70
+  _AttackPower: 240
+  _DeffensePower: 150
 --- !u!114 &1000453300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2803,6 +2810,7 @@ MonoBehaviour:
   Speed: 30
   Target: {fileID: 83842448}
   attack: {fileID: 1000453296}
+  isEnemybeInStraightLine: 0
   Undercheck: {fileID: 878141441}
   WhatisGround:
     serializedVersion: 2
@@ -2828,11 +2836,13 @@ MonoBehaviour:
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
+  IsBinded: 0
+  IsActable: 1
   WhatIsEnemy:
     serializedVersion: 2
     m_Bits: 128
   AttackPos: {fileID: 1053877973}
-  Bullet: {fileID: 0}
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
   myui: {fileID: 0}
 --- !u!65 &1000453302
 BoxCollider:
