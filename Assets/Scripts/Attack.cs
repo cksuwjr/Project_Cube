@@ -14,10 +14,10 @@ public class Attack : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) 
-            attack = "BasicAttack";
+        //if (Input.GetKeyDown(KeyCode.A)) 
+            //attack = "BasicAttack";
         if (Input.GetKeyDown(KeyCode.Q))
             attack = "Q";
         if (Input.GetKeyDown(KeyCode.W))
