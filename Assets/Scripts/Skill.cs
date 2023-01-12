@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skill : MonoBehaviour
+public abstract class Skill : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    protected CubeController controller;
+    protected void Start()
     {
-        
+        if (GetComponent<CubeController>())
+            controller = GetComponent<CubeController>();
+        else
+            Debug.LogError("해당 대상에 CubeController.cs 가 없습니다!");
     }
-
-    // Update is called once per frame
-    void Update()
+    public void Cast()
     {
-        
+        StartCoroutine("Cast_");
     }
+    public void StopCast()
+    {
+        StopCoroutine("Cast_");
+    }
+    protected abstract IEnumerator Cast_();
 }

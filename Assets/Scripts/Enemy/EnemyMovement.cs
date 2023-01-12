@@ -74,7 +74,10 @@ public class EnemyMovement : MonoBehaviour
             if (colliders.Length == 0)
                 verticalDir = 0;
         }
-        
+
+        //if ((horizontalDir * verticalDir) == 1)
+        //    isEnemybeInStraightLine = true;
+       
 
         // Angle by input
         int HorizonAngle = 0;

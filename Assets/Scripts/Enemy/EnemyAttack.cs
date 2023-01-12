@@ -22,29 +22,68 @@ public class EnemyAttack : Attack
         render = GetComponent<Renderer>();
         myColor = render.material.color;
     }
-    IEnumerator AttackDelay(float time)
-    {
-        isAttackAble = false;
-        yield return new WaitForSeconds(time);
-        isAttackAble = true;
-        render.material.color = myColor;
-    }
-    IEnumerator AttackStartDelay(float time)
+    IEnumerator Attack(float delay)
     {
         isAttackAble = false;
         
         render.material.color = myColor + new Color(0.3f,-0.15f, -0.15f);
-        yield return new WaitForSeconds(time);
-        StartCoroutine(AttackDelay(1));
+        yield return new WaitForSeconds(delay);
         controller.Attack(new Vector3(1, 1, 1));
+        render.material.color = myColor;
+
+        isAttackAble = true;
     }
-    IEnumerator StartShooting(float time, float delay)
+    IEnumerator Shooting(float delay)
     {
         isAttackAble = false;
-        yield return new WaitForSeconds(time);
-        StartCoroutine(AttackDelay(delay));
-        controller.Skill("Cast_Q");
+
+        render.material.color = myColor + new Color(0.3f, -0.15f, -0.15f);
+        yield return new WaitForSeconds(delay);
+        controller.Skill(controller.Skill_Q);
+        render.material.color = myColor;
+
+        isAttackAble = true;
     }
+    IEnumerator Q(float delay)
+    {
+        isAttackAble = false;
+
+        controller.Skill(controller.Skill_Q);
+        yield return new WaitForSeconds(delay);
+
+        isAttackAble = true;
+    }
+    IEnumerator W(float delay)
+    {
+        isAttackAble = false;
+
+        if (controller.isGround)
+           GetComponent<Rigidbody>().AddForce(new Vector3(0, 100f, 0));
+        yield return new WaitForSeconds(delay);
+        controller.Skill(controller.Skill_W);
+
+        isAttackAble = true;
+    }
+    IEnumerator E(float delay)
+    {
+        isAttackAble = false;
+
+        controller.Skill(controller.Skill_E);
+        yield return new WaitForSeconds(delay);
+
+        isAttackAble = true;
+    }
+    IEnumerator R(float delay)
+    {
+        isAttackAble = false;
+
+        controller.Skill(controller.Skill_R);
+        yield return new WaitForSeconds(delay);
+
+        isAttackAble = true;
+    }
+    private void Update() { }
+
     private void FixedUpdate()
     {
         if (isShootableEnemy)
@@ -54,33 +93,37 @@ public class EnemyAttack : Attack
         if (isEnemyNear && isAttackAble && !controller.IsBinded && controller.IsActable)
             attack = "BasicAttack";
 
+        if (!move.isEnemybeInStraightLine && !isEnemyNear)
+            attack = "Random";
+
 
         if (attack == null || attack == "") return;
 
         if (attack == "BasicAttack" && isAttackAble)
         {
-            StartCoroutine(AttackStartDelay(0.45f));
+            StartCoroutine(Attack(0.45f));
         }
         
         if (isShootableEnemy)
             if (attack == "ShootingAttack" && isAttackAble)
-                StartCoroutine(StartShooting(0.3f, 0.075f));
+                StartCoroutine(Shooting(0.65f));
+
+        
+        if (attack == "Random" && isShootableEnemy && isAttackAble)
+        {
+            int rand = Random.Range(0, 5);
+            if (rand == 1) { }
+            else if (rand == 2)
+                StartCoroutine(W(0.3f));
+            else if (rand == 3) { }
+            //StartCoroutine(E(0.5f));
+            else if (rand == 4)
+                StartCoroutine(R(2.5f));
+        }
+
 
         attack = "";
     }
-    /*
-    public float CalcDamage(GameObject attacker, GameObject deffender)
-    {
-        return attacker.GetComponent<Status>().AttackPower - deffender.GetComponent<Status>().DeffensePower;
-    }
-    public bool isAttackTarget(GameObject deffender)
-    {
-        if (deffender == gameObject)
-            return false;
-
-        return true;
-    }
-    */
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == move.Target) isEnemyNear = true;

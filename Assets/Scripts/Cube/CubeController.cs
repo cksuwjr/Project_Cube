@@ -16,10 +16,10 @@ public class CubeController : MonoBehaviour
 	[SerializeField] private Transform GroundCheck;                           // A position marking where to check if the player is grounded.
 
 	const float GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-	private bool isGround;            // Whether or not the player is grounded.
+	public bool isGround;            // Whether or not the player is grounded.
 	private Rigidbody rb ;
 
-	private Vector3 direction = Vector3.zero;
+	public Vector3 direction = Vector3.zero;
 	private Vector3 m_Velocity = Vector3.zero;
 
 
@@ -39,16 +39,27 @@ public class CubeController : MonoBehaviour
 	[SerializeField] private LayerMask WhatIsEnemy;
 	[SerializeField] private Transform AttackPos;
 
-	[SerializeField] private GameObject Bullet;
-
 	[SerializeField] private GameObject RecentAttacker;
+
+	// Skill
+	[SerializeField] public Skill Skill_Q;
+	[SerializeField] public Skill Skill_W;
+	[SerializeField] public Skill Skill_E;
+	[SerializeField] public Skill Skill_R;
 
 	// UI
 	[SerializeField] private CubeUI myui;
 
 
+
+
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
+
+
+
+
+
 
 
 	private void Awake()
@@ -81,6 +92,7 @@ public class CubeController : MonoBehaviour
 	}
 
 
+	// ============================ 움직임 ===============================
 	public void Move(float dirAngle, float speed, bool jump)
 	{
 		//only control the player if grounded or airControl is turned on
@@ -117,6 +129,8 @@ public class CubeController : MonoBehaviour
 			rb.AddForce(new Vector2(0f, JumpForce));
 		}
 	}
+
+	// ============================ 공격 범위 생성 및 적용 ===============================
 	public void Attack(Vector3 attacksize, float attackdamage = -1, string isFront = "Front", string CC = "None", float howmuch = 0) // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
     {
 		Vector3 attackPos;
@@ -163,111 +177,32 @@ public class CubeController : MonoBehaviour
                     Debug.Log("공격대상이 Hit 컴포넌트를 소유하지 않았습니다.");
 		}
 	}
-	public void Q() { Skill("Cast_Q"); }
-	public void W() { Skill("Cast_W"); }
-	public void E() { Skill("Cast_E"); }
-	public void R() { Skill("Cast_R", "Cast_E"); }
-	IEnumerator Cast_Q()
-	{
-		Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(gameObject, GetComponent<Status>().AttackPower * 0.5f, 30, 0.8f);
-		
-		yield return null;
-	}
+	// ============================ 스킬 시전 시스템 ===============================
 
-	IEnumerator Cast_W()
-	{
-		if (!isGround)
-        {
-			float Airbornforce = 100 * transform.position.y;
-			rb.MovePosition(new Vector3(transform.position.x, 1, transform.position.z));
-			GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
-			for (int i = 0; i < enemys.Length; i++)
-			{
-				CubeController enemycontroller = enemys[i].GetComponent<CubeController>();
-				if (enemycontroller.isGround)
-				{
-					enemycontroller.AirBorned(Airbornforce);
-					enemycontroller.GetDamage(1, gameObject);
-				}
-			}
-		}
-		
-
-		yield return null;
-	}
-
+	public void Q() { Skill(Skill_Q); }
+	public void W() { Skill(Skill_W); }
+	public void E() { Skill(Skill_E); }
+	public void R() { Skill(Skill_R, Skill_E); }
 	
-	IEnumerator Cast_E()
+	public void Skill(Skill skill = null, Skill Except = null)
     {
-		transform.rotation = Quaternion.Euler(Vector3.zero);
-		// 중력 및 충돌 차단
-		rb.useGravity = false;
-		Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
+		if (Except != Skill_Q) Skill_Q.StopCast();
+		if (Except != Skill_W) Skill_W.StopCast();
+		if (Except != Skill_E) Skill_E.StopCast();
+		if (Except != Skill_R) Skill_R.StopCast();
 
-		// 무적
-		GetComponent<Hit>().isHittable = false;
-		Vector3 nowPos = transform.position;
-		
-
-		direction = new Vector3(direction.x, 0, direction.z);
-		rb.velocity = direction * 80f + new Vector3(0, rb.velocity.y, 0);
-
-		
-	
-		yield return new WaitForSeconds(0.05f);
-		Vector3 afterPos = transform.position;
-
-		// 지나간 공간에 존재하는 적 공격
-		Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), GetComponent<Status>().AttackPower * 1.25f + 20, "Back", "AirBorned", 500f);
-
-		// 도착후 인근 띄우며 공격
-		//Attack(new Vector3(3, 1, 3), GetComponent<Status>().AttackPower, "Middle", "AirBorned", 500f);
-
-		// 중력 및 충돌 재활성화
-		rb.useGravity = true;
-
-		yield return new WaitForSeconds(0.15f);
-		GetComponent<Hit>().isHittable = true;
-		Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
-		
+		if (skill != null) skill.Cast();
 	}
 
-	
-	IEnumerator Cast_R()
-	{
-		float timer = 0f;
-		int count = 0;
-		while(timer < 2.5f)
-        {
-			if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-				StopCoroutine("Cast_R");
-
-			if (count++ > 2)
-			{
-				Attack(new Vector3(6f, 1, 6f), 25f, "Middle");
-				count = 0;
-			}
-			transform.Rotate(new Vector3(0, 225, 0));
-			timer += 0.05f;
-			yield return new WaitForSeconds(0.05f);
-			Instantiate(Bullet, transform.position, transform.rotation).GetComponent<Bullet>().Tang(gameObject, GetComponent<Status>().AttackPower * (Random.Range(0.185f, 0.325f)), 45f, 0.15f);
-		}
-		transform.rotation = Quaternion.Euler(Vector3.zero);
-	}
-	public void Skill(string Cast_What = null, string Except = null)
-    {
-		if (Except != "Cast_Q") StopCoroutine("Cast_Q");
-		if (Except != "Cast_W") StopCoroutine("Cast_W");
-		if (Except != "Cast_E") StopCoroutine("Cast_E");
-		if (Except != "Cast_R") StopCoroutine("Cast_R");
-
-		if (Cast_What != null) StartCoroutine(Cast_What);
-	}
+	// ============================ 스탯 또는 버프 적용 ===============================
 
 	public void PowerUp(float ad)
     {
 		GetComponent<Status>().AttackPower += ad;
     }
+
+	// ============================ 스탯(HP, 죽음) 관련 ===============================
+
 	public void GetDamage(float damage, GameObject fromwho = null)
     {
 		Status mystat = GetComponent<Status>();
@@ -279,7 +214,6 @@ public class CubeController : MonoBehaviour
 
 		if (mystat.Hp < 0)
 			Die();
-		//Debug.Log(gameObject.name + "가 " + damage + "의 피해를 입었습니다! 남은체력: " + mystat.Hp);
 	}
 	public void GetHeal(float heal)
     {
@@ -290,7 +224,6 @@ public class CubeController : MonoBehaviour
 
 		if (mystat.Hp > mystat.MaxHp) // 체력 제한
 			mystat.Hp = mystat.MaxHp;
-		//Debug.Log(gameObject.name + "가 " + heal + "의 체력을 회복하였습니다! 현재체력: " + mystat.Hp);
 	}
 	public void Die()
     {
@@ -307,15 +240,8 @@ public class CubeController : MonoBehaviour
 		}
 		Destroy(gameObject);
     }
-	public void SelfDistriction()
-    {
-		if (transform.position.y < -5)// 추락시
-			Die();
-
-		
-	}
 	
-	// CC기 적용
+	// ============================ CC기 적용 ===============================
 
 	IEnumerator CC(float time)
 	{
@@ -344,10 +270,12 @@ public class CubeController : MonoBehaviour
 		transform.rotation = Quaternion.LookRotation(dir);
 		rb.velocity = new Vector3(-dir.x * howmuch, rb.velocity.y, -dir.z * howmuch);
     }
+	
+	// ============================= 특수 조건 =====================================
+	public void SelfDistriction()
+	{
+		if (transform.position.y < -5)// 추락시
+			Die();
+	}
 
- //   private void OnDrawGizmos()
- //   {
-	//	Gizmos.color = Color.green;
-	//	Gizmos.DrawCube(AttackPos.position, new Vector3(1 * direction.x, 1, 10 * direction.z));
-	//}
 }

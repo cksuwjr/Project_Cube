@@ -263,6 +263,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   GroundCheck: {fileID: 2125137148}
+  isGround: 0
+  direction: {x: 0, y: 0, z: 0}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -272,8 +274,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   AttackPos: {fileID: 1579517688}
-  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
   RecentAttacker: {fileID: 0}
+  Skill_Q: {fileID: 0}
+  Skill_W: {fileID: 0}
+  Skill_E: {fileID: 0}
+  Skill_R: {fileID: 0}
   myui: {fileID: 0}
 --- !u!114 &15949348
 MonoBehaviour:
@@ -674,6 +679,10 @@ GameObject:
   - component: {fileID: 83842457}
   - component: {fileID: 83842458}
   - component: {fileID: 83842459}
+  - component: {fileID: 83842463}
+  - component: {fileID: 83842462}
+  - component: {fileID: 83842461}
+  - component: {fileID: 83842460}
   m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
@@ -792,6 +801,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 72
   GroundCheck: {fileID: 1403813384}
+  isGround: 0
+  direction: {x: 0, y: 0, z: 0}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -801,8 +812,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   AttackPos: {fileID: 1167852398}
-  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
   RecentAttacker: {fileID: 0}
+  Skill_Q: {fileID: 83842463}
+  Skill_W: {fileID: 83842462}
+  Skill_E: {fileID: 83842461}
+  Skill_R: {fileID: 83842460}
   myui: {fileID: 1794287368}
 --- !u!54 &83842455
 Rigidbody:
@@ -832,8 +846,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28dbd40d463f4cb41be70e99392f6047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _MaxHp: 500
-  _Hp: 500
+  _MaxHp: 50000
+  _Hp: 50000
   _AttackPower: 100
   _DeffensePower: 20
 --- !u!114 &83842457
@@ -877,6 +891,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DamageSkin: {fileID: 1643027433382092732, guid: 229ef29870517c14ab9de27bead276eb, type: 3}
   HealSkin: {fileID: 1643027433382092732, guid: 29e94b9a2bf126b43aa146b4360d8a37, type: 3}
+--- !u!114 &83842460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83842448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9c43e2ff2589642b37dc97bc95f327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
+--- !u!114 &83842461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83842448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadfd7c4774a0f34c90d5d5cdc7df2df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &83842462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83842448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 259d6ac522516f0408952c3371a0ba24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &83842463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83842448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e472f6751254eb8479307e89a2ebb4fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
 --- !u!1 &92147101
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,6 +1335,17 @@ MonoBehaviour:
   cubeUI: {fileID: 0}
   mode: 0
   Stage: 0
+  SpawnMobCount:
+  - {x: 1, y: 0}
+  - {x: 5, y: 0}
+  - {x: 10, y: 1}
+  - {x: 20, y: 2}
+  - {x: 25, y: 3}
+  - {x: 30, y: 4}
+  - {x: 0, y: 10}
+  - {x: 2, y: 20}
+  - {x: 0, y: 50}
+  - {x: 0, y: 10000}
   SpawnTerm: 3
   FasterSpeed: 0
   FasterSpawn: 0
@@ -2716,6 +2791,10 @@ GameObject:
   - component: {fileID: 1000453297}
   - component: {fileID: 1000453296}
   - component: {fileID: 1000453295}
+  - component: {fileID: 1000453307}
+  - component: {fileID: 1000453310}
+  - component: {fileID: 1000453309}
+  - component: {fileID: 1000453308}
   m_Layer: 6
   m_Name: Boss
   m_TagString: Enemy
@@ -2836,6 +2915,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   GroundCheck: {fileID: 608768149}
+  isGround: 0
+  direction: {x: 0, y: 0, z: 0}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -2845,8 +2926,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   AttackPos: {fileID: 1053877973}
-  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
   RecentAttacker: {fileID: 0}
+  Skill_Q: {fileID: 1000453307}
+  Skill_W: {fileID: 1000453310}
+  Skill_E: {fileID: 1000453309}
+  Skill_R: {fileID: 1000453308}
   myui: {fileID: 0}
 --- !u!65 &1000453302
 BoxCollider:
@@ -2943,6 +3027,56 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1000453307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000453294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e472f6751254eb8479307e89a2ebb4fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
+--- !u!114 &1000453308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000453294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9c43e2ff2589642b37dc97bc95f327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
+--- !u!114 &1000453309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000453294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadfd7c4774a0f34c90d5d5cdc7df2df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1000453310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000453294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 259d6ac522516f0408952c3371a0ba24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1053877972
 GameObject:
   m_ObjectHideFlags: 0
@@ -3457,6 +3591,17 @@ MonoBehaviour:
   cubeUI: {fileID: 0}
   mode: 0
   Stage: 0
+  SpawnMobCount:
+  - {x: 1, y: 0}
+  - {x: 5, y: 0}
+  - {x: 10, y: 1}
+  - {x: 20, y: 2}
+  - {x: 25, y: 3}
+  - {x: 30, y: 4}
+  - {x: 0, y: 10}
+  - {x: 2, y: 20}
+  - {x: 0, y: 50}
+  - {x: 0, y: 10000}
   SpawnTerm: 3
   FasterSpeed: 0
   FasterSpawn: 0
@@ -3918,6 +4063,17 @@ MonoBehaviour:
   cubeUI: {fileID: 1794287368}
   mode: 0
   Stage: 0
+  SpawnMobCount:
+  - {x: 1, y: 10}
+  - {x: 5, y: 0}
+  - {x: 10, y: 1}
+  - {x: 20, y: 2}
+  - {x: 25, y: 3}
+  - {x: 30, y: 4}
+  - {x: 0, y: 10}
+  - {x: 2, y: 20}
+  - {x: 0, y: 50}
+  - {x: 0, y: 10000}
   SpawnTerm: 3
   FasterSpeed: 0
   FasterSpawn: 0
@@ -3969,6 +4125,17 @@ MonoBehaviour:
   cubeUI: {fileID: 0}
   mode: 0
   Stage: 0
+  SpawnMobCount:
+  - {x: 1, y: 0}
+  - {x: 5, y: 0}
+  - {x: 10, y: 1}
+  - {x: 20, y: 2}
+  - {x: 25, y: 3}
+  - {x: 30, y: 4}
+  - {x: 0, y: 10}
+  - {x: 2, y: 20}
+  - {x: 0, y: 50}
+  - {x: 0, y: 10000}
   SpawnTerm: 3
   FasterSpeed: 0
   FasterSpawn: 0
