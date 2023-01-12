@@ -42,7 +42,7 @@ public class CubeUI : MonoBehaviour
     public void PopupDieUI()
     {
         string text = "";
-        
+        /*
         if (LiveTime < 10)
             text += "자살은 몸에 좋지 않아요..";
         else if (LiveTime <= 30)
@@ -55,7 +55,7 @@ public class CubeUI : MonoBehaviour
             text += "{0:0.00}초. 뭐야 집중이야 꼼수야";
         else
             text += "잘하누, {0:0.00}초 버텼다 야.";
-        
+        */
         text += "\n\n\n\n";
         text += "버틴 시간: {0:0.00}초";
         dietext.text = string.Format(text, LiveTime, LiveTime);
