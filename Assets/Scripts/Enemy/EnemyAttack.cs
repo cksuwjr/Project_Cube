@@ -24,63 +24,55 @@ public class EnemyAttack : Attack
     }
     IEnumerator Attack(float delay)
     {
-        isAttackAble = false;
-        
-        render.material.color = myColor + new Color(0.3f,-0.15f, -0.15f);
+        SkillStart(myColor + new Color(0.3f, -0.15f, -0.15f));
         yield return new WaitForSeconds(delay);
         controller.Attack(new Vector3(1, 1, 1));
-        render.material.color = myColor;
-
-        isAttackAble = true;
+        SkillEnd();
     }
     IEnumerator Shooting(float delay)
     {
-        isAttackAble = false;
-
-        render.material.color = myColor + new Color(0.3f, -0.15f, -0.15f);
+        SkillStart(myColor + new Color(0.3f, -0.15f, -0.15f));
         yield return new WaitForSeconds(delay);
         controller.Skill(controller.Skill_Q);
-        render.material.color = myColor;
-
-        isAttackAble = true;
+        SkillEnd();
     }
     IEnumerator Q(float delay)
     {
-        isAttackAble = false;
-
         controller.Skill(controller.Skill_Q);
         yield return new WaitForSeconds(delay);
-
-        isAttackAble = true;
+        SkillEnd();
     }
     IEnumerator W(float delay)
     {
-        isAttackAble = false;
-
         if (controller.isGround)
-           GetComponent<Rigidbody>().AddForce(new Vector3(0, 100f, 0));
+           GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, 0));
         yield return new WaitForSeconds(delay);
         controller.Skill(controller.Skill_W);
-
-        isAttackAble = true;
+        SkillEnd();
     }
     IEnumerator E(float delay)
     {
-        isAttackAble = false;
-
         controller.Skill(controller.Skill_E);
         yield return new WaitForSeconds(delay);
-
-        isAttackAble = true;
+        SkillEnd();
     }
     IEnumerator R(float delay)
     {
-        isAttackAble = false;
-
         controller.Skill(controller.Skill_R);
         yield return new WaitForSeconds(delay);
-
+        SkillEnd();
+    }
+    private void SkillStart(Color color)
+    {
+        isAttackAble = false;
+        render.material.color = color;
+        GetComponent<Rigidbody>().velocity = new Vector3(0, GetComponent<Rigidbody>().velocity.y, 0);
+    }
+    private void SkillEnd()
+    {
         isAttackAble = true;
+        render.material.color = myColor;
+        GetComponent<Rigidbody>().velocity = new Vector3(0,GetComponent<Rigidbody>().velocity.y, 0);
     }
     private void Update() { }
 
@@ -93,7 +85,8 @@ public class EnemyAttack : Attack
         if (isEnemyNear && isAttackAble && !controller.IsBinded && controller.IsActable)
             attack = "BasicAttack";
 
-        if (!move.isEnemybeInStraightLine && !isEnemyNear)
+        int rand = Random.Range(0, 1000);
+        if (0 < rand && rand < 5)
             attack = "Random";
 
 
@@ -109,16 +102,29 @@ public class EnemyAttack : Attack
                 StartCoroutine(Shooting(0.65f));
 
         
+        //if (!move.isEnemybeInStraightLine && !isEnemyNear)
+
         if (attack == "Random" && isShootableEnemy && isAttackAble)
         {
-            int rand = Random.Range(0, 5);
-            if (rand == 1) { }
-            else if (rand == 2)
-                StartCoroutine(W(0.3f));
-            else if (rand == 3) { }
-            //StartCoroutine(E(0.5f));
-            else if (rand == 4)
+            
+            if (rand == 1 && controller.Skill_Q) {
+                SkillStart(Color.blue);
+                StartCoroutine(Q(0.1f));
+            }
+            else if (rand == 2 && controller.Skill_W)
+            {
+                SkillStart(Color.black);
+                StartCoroutine(W(1.35f));
+            }
+            else if (rand == 3 && controller.Skill_E) {
+                SkillStart(Color.blue);
+                StartCoroutine(E(0.1f));
+            }
+            else if (rand == 4 && controller.Skill_R)
+            {
+                SkillStart(Color.blue);
                 StartCoroutine(R(2.5f));
+            }
         }
 
 
