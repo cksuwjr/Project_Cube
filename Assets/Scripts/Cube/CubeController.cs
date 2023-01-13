@@ -131,7 +131,7 @@ public class CubeController : MonoBehaviour
 	}
 
 	// ============================ 공격 범위 생성 및 적용 ===============================
-	public void Attack(Vector3 attacksize, float attackdamage = -1, string isFront = "Front", string CC = "None", float howmuch = 0) // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
+	public void Attack(Vector3 attacksize, float attackdamage = -1, string isFront = "Front", string CC = "None", float howmuch = 0, string isAllAttack = "No") // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
     {
 		Vector3 attackPos;
 		if (isFront == "Front")
@@ -142,6 +142,7 @@ public class CubeController : MonoBehaviour
 			attackPos = AttackPos.position;
 		//attackPos = isFront ? AttackPos.position + new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z) : AttackPos.position - new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
 		Collider[] colliders = Physics.OverlapBox(attackPos, attacksize / 2, transform.rotation, WhatIsEnemy);
+		if (isAllAttack == "Yes") colliders = Physics.OverlapBox(attackPos, attacksize / 2, transform.rotation, ((1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Enemy"))));
 		for (int i = 0; i < colliders.Length; i++)
 		{
 			if (colliders[i].isTrigger) continue; // isTrigger가 true인 collider는 감지 제외(collider가 여럿인 개체의 중복적용 방지위한 임시방책)
@@ -243,7 +244,7 @@ public class CubeController : MonoBehaviour
 	
 	// ============================ CC기 적용 ===============================
 
-	IEnumerator CC(float time)
+	public IEnumerator CC(float time)
 	{
 		IsBinded = true;
 		yield return new WaitForSeconds(time);
@@ -259,6 +260,8 @@ public class CubeController : MonoBehaviour
 
 	public void AirBorned(float howmuch)
     {
+		rb.velocity = Vector3.zero;
+		StartCoroutine(CC(0.004f * howmuch));
 		rb.AddForce(new Vector2(0, howmuch));
     }
 	public void KnockBack(GameObject fromwho, float howmuch)

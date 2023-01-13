@@ -11,6 +11,10 @@ public class Skill_Heavylanding : Skill
 			float Airbornforce = 100 * transform.position.y;
 
 			GetComponent<Rigidbody>().MovePosition(new Vector3(transform.position.x, 1, transform.position.z));
+			yield return new WaitForSeconds(0.05f);
+			controller.Attack(new Vector3(15, 1, 15), 1, "Middle", "AirBorned", Airbornforce, "Yes");
+
+			/*
 			GameObject[] enemys;
 			if (gameObject.layer == LayerMask.NameToLayer("Player"))
 				enemys = GameObject.FindGameObjectsWithTag("Enemy");
@@ -21,10 +25,12 @@ public class Skill_Heavylanding : Skill
 				CubeController enemycontroller = enemys[i].GetComponent<CubeController>();
 				if (enemycontroller.isGround)
 				{
+					enemycontroller.GetComponent<Rigidbody>().velocity = Vector3.zero;
 					enemycontroller.AirBorned(Airbornforce);
-					enemycontroller.GetDamage(1, gameObject);
+					enemycontroller.StartCoroutine(enemycontroller.CC(0.004f * Airbornforce));
 				}
 			}
+			*/
 		}
 		yield return null;
 	}

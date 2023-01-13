@@ -33,13 +33,13 @@ public class Attack : MonoBehaviour
 
         if (attack == "BasicAttack")
             controller.Attack(new Vector3(1, 1, 1));
-        else if (attack == "Q")
+        else if (attack == "Q" && !controller.IsBinded)
             controller.Q();
-        else if (attack == "W")
+        else if (attack == "W" && !controller.IsBinded)
             controller.W();
-        else if (attack == "E")
+        else if (attack == "E" && !controller.IsBinded)
             controller.E();
-        else if (attack == "R")
+        else if (attack == "R" && !controller.IsBinded)
             controller.R();
         attack = "";
     }

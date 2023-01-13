@@ -24,7 +24,13 @@ public class EnemySpawner : MonoBehaviour
     public float SpawnTerm = 2;
 
     public float FasterSpeed = 0f;
-    public float FasterSpawn = 1f; 
+    public float FasterSpawn = 1f;
+
+    bool isAllSpawned_Enemy = false;
+    bool isAllSpawned_Boss = false;
+
+
+    static GameObject Spawned;
 
     void Start()
     {
@@ -36,16 +42,30 @@ public class EnemySpawner : MonoBehaviour
     }
     IEnumerator Spawn(GameObject Monster, int howmany)
     {
+        if (Monster == Enemy)
+            isAllSpawned_Enemy = false;
+        if (Monster == Boss)
+            isAllSpawned_Boss = false;
         int count = 0;
         while(count < howmany)
         {
-            GameObject spawned = Instantiate(Monster, transform.position, Quaternion.identity);
-            spawned.SetActive(true);
+            GameObject Spawned = Instantiate(Monster, transform.position, Quaternion.identity);
+            Spawned.SetActive(true);
             count++;
             yield return new WaitForSeconds(SpawnTerm);
         }
         if (Monster == Enemy)
-            StartCoroutine(NextStage(10 + 5 * Stage));
+            isAllSpawned_Enemy = true;
+        if (Monster == Boss)
+            isAllSpawned_Boss = true;
+
+        if (isAllSpawned_Enemy && isAllSpawned_Boss) { 
+            while(Spawned)
+            {
+                yield return null;
+            }
+            StartCoroutine(NextStage(2 + Stage));
+        }
     }
     IEnumerator NextStage(float time)
     {
@@ -58,7 +78,7 @@ public class EnemySpawner : MonoBehaviour
             Debug.Log("현재 스테이지 " + (Stage + 1));
             if (cubeUI)
                 cubeUI.PopupStageUI("Stage " + (Stage + 1));
-            SpawnTerm = 2 - (Stage * 0.17f);
+            SpawnTerm = 3 - (Stage * 0.27f);
 
             StartCoroutine(Spawn(Enemy, (int)SpawnMobCount[Stage].x));
             StartCoroutine(Spawn(Boss, (int)SpawnMobCount[Stage].y));
