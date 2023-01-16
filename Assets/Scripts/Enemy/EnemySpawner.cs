@@ -59,12 +59,8 @@ public class EnemySpawner : MonoBehaviour
         if (Monster == Boss)
             isAllSpawned_Boss = true;
 
-        if (isAllSpawned_Enemy && isAllSpawned_Boss) { 
-            while(Spawned)
-            {
-                yield return null;
-            }
-            StartCoroutine(NextStage(2 + Stage));
+        if (isAllSpawned_Enemy && isAllSpawned_Boss && cubeUI) { 
+            StartCoroutine(NextStage(5 + Stage));
         }
     }
     IEnumerator NextStage(float time)

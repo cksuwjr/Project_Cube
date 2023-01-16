@@ -5,7 +5,8 @@ using UnityEngine;
 public class Danger : MonoBehaviour
 {
     [SerializeField] private GameObject Meteo;
-
+    [SerializeField] private Vector2 Horizontal_Spawn_Range;
+    [SerializeField] private Vector2 Vertical_Spawn_Range;
     void Start()
     {
         StartCoroutine(StartDangerous(1.5f));
@@ -26,7 +27,7 @@ public class Danger : MonoBehaviour
     }
     void Next()
     {
-        Instantiate(gameObject, new Vector3(Random.Range(-23, 23), 1.1f, Random.Range(-23, 23)), transform.rotation).SetActive(true);
+        Instantiate(gameObject, new Vector3(Random.Range(Horizontal_Spawn_Range.x, Horizontal_Spawn_Range.y), 1.1f, Random.Range(Vertical_Spawn_Range.x, Vertical_Spawn_Range.y)), transform.rotation).SetActive(true);
         //Instantiate(gameObject, new Vector3(Random.Range(-23, 23), 1.1f, Random.Range(-23, 23)), transform.rotation).SetActive(true);
         Destroy(gameObject);
     }

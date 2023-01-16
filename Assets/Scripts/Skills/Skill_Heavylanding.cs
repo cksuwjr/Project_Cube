@@ -8,11 +8,14 @@ public class Skill_Heavylanding : Skill
 	{
 		if (!controller.isGround)
 		{
-			float Airbornforce = 100 * transform.position.y;
 
 			GetComponent<Rigidbody>().MovePosition(new Vector3(transform.position.x, 1, transform.position.z));
 			yield return new WaitForSeconds(0.05f);
-			controller.Attack(new Vector3(15, 1, 15), 1, "Middle", "AirBorned", Airbornforce, "Yes");
+			float basic_Attack_damage = 1;
+			float Attack_coefficient = 0;
+			float Airbornforce = (20 * skill_Level) * transform.position.y;
+
+			controller.Attack(new Vector3(15, 1, 15), basic_Attack_damage + (GetComponent<Status>().AttackPower * Attack_coefficient), "Middle", "AirBorned", Airbornforce, "Yes");
 
 			/*
 			GameObject[] enemys;

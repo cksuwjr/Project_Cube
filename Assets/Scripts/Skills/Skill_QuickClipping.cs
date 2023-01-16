@@ -26,8 +26,12 @@ public class Skill_QuickClipping : Skill
 		yield return new WaitForSeconds(0.05f);
 		Vector3 afterPos = transform.position;
 
+
 		// 지나간 공간에 존재하는 적 공격
-		controller.Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), GetComponent<Status>().AttackPower * 1.25f + 20, "Back");
+		float basic_Attack_Damage = 25 + 15 * skill_Level;
+		float Attack_coefficient = 0.65f + (0.1f * skill_Level);
+
+		controller.Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), basic_Attack_Damage + GetComponent<Status>().AttackPower * Attack_coefficient, "Back");
 
 		// 중력 및 충돌 재활성화
 		rb.useGravity = true;
