@@ -7,6 +7,7 @@ public class CubeUI : MonoBehaviour
 {
     public Status PlayerCube;
     public Image HpBar;
+    public Image ExpBar;
 
     // End
     public float LiveTime = 0f;
@@ -20,23 +21,26 @@ public class CubeUI : MonoBehaviour
     {
         if (PlayerCube == null) PlayerCube = GameObject.Find("Cube").GetComponent<Status>();
         if (HpBar == null) HpBar = transform.GetChild(1).GetComponent<Image>();
-
+           
         dietext.text = "";
 
         PopupStageUI("Stage 1");
     }
     void Hp_Update(float var)
     {
-        PlayerCube.Hp -= var;
+        //PlayerCube.Hp -= var;
         HpBar.fillAmount = PlayerCube.Hp / PlayerCube.MaxHp;
+    }
+    void Exp_Update(float var)
+    {
+        ExpBar.fillAmount = PlayerCube.Exp / PlayerCube.MaxExp;
     }
 
     private void Update()
     {
         LiveTime += Time.deltaTime;
         Hp_Update(0);
-
-        
+        Exp_Update(0);
     }
 
     public void PopupDieUI()

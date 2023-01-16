@@ -99,7 +99,7 @@ public class EnemyAttack : Attack
         
         if (isShootableEnemy)
             if (attack == "ShootingAttack" && isAttackAble)
-                StartCoroutine(Shooting(0.65f));
+                StartCoroutine(Shooting(0.45f));
 
         
         //if (!move.isEnemybeInStraightLine && !isEnemyNear)

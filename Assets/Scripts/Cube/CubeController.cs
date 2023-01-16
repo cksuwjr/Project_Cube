@@ -187,23 +187,38 @@ public class CubeController : MonoBehaviour
 	
 	public void Skill(Skill skill = null, Skill Except = null)
     {
-		if (Except != Skill_Q) Skill_Q.StopCast();
-		if (Except != Skill_W) Skill_W.StopCast();
-		if (Except != Skill_E) Skill_E.StopCast();
-		if (Except != Skill_R) Skill_R.StopCast();
+		if (skill == null) return;
+		
+        if (skill.Cast()) // 스킬 캐스트 및 성공 시
+        {
+            if (Except != Skill_Q && skill != Skill_Q) Skill_Q.StopCast();
+            if (Except != Skill_W && skill != Skill_W) Skill_W.StopCast();
+            if (Except != Skill_E && skill != Skill_E) Skill_E.StopCast();
+            if (Except != Skill_R && skill != Skill_R) Skill_R.StopCast();
+        }
+    }
 
-		if (skill != null) skill.Cast();
-	}
+    // ============================ 스탯 또는 버프 적용 ===============================
 
-	// ============================ 스탯 또는 버프 적용 ===============================
-
-	public void PowerUp(float ad)
+    public void PowerUp(float ad)
     {
 		GetComponent<Status>().AttackPower += ad;
     }
 
 	// ============================ 스탯(HP, 죽음) 관련 ===============================
+	public void GetExp(float howmuch)
+    {
+		Status mystat = GetComponent<Status>();
+		mystat.Exp += howmuch;
 
+		if (mystat.Exp > mystat.MaxExp)
+        {
+			float excess = mystat.Exp - mystat.MaxExp;
+			LevelUp();
+			mystat.Exp += excess;
+        }
+
+	}
 	public void GetDamage(float damage, GameObject fromwho = null)
     {
 		Status mystat = GetComponent<Status>();
@@ -238,10 +253,23 @@ public class CubeController : MonoBehaviour
 		{
 			RecentAttacker.GetComponent<CubeController>().GetHeal(50);
 			RecentAttacker.GetComponent<CubeController>().PowerUp(3);
+			RecentAttacker.GetComponent<CubeController>().GetExp(50);
 		}
 		Destroy(gameObject);
     }
-	
+
+	// ============================ 레벨업 ==================================
+
+	public void LevelUp()
+    {
+		Status mystat = GetComponent<Status>();
+
+		mystat.Exp = 0;
+		Debug.Log("시간 멈추고 스킬 업글 창 띄우기 or 그냥 롤처럼 +띄우기");
+	}
+
+
+
 	// ============================ CC기 적용 ===============================
 
 	public IEnumerator CC(float time)
@@ -270,7 +298,7 @@ public class CubeController : MonoBehaviour
 
 		Vector3 dir = Vector3.zero;
 		try{ dir = (fromwho.transform.position - transform.position).normalized;} catch { }
-		transform.rotation = Quaternion.LookRotation(dir);
+		//transform.rotation = Quaternion.LookRotation(dir);
 		rb.velocity = new Vector3(-dir.x * howmuch, rb.velocity.y, -dir.z * howmuch);
     }
 	
