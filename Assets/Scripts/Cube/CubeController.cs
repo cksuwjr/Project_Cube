@@ -50,7 +50,8 @@ public class CubeController : MonoBehaviour
 	// UI
 	[SerializeField] private CubeUI myui;
 
-
+	// Level
+	public int Level = 1;
 
 
 	[System.Serializable]
@@ -70,8 +71,13 @@ public class CubeController : MonoBehaviour
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
 	}
+    private void Start()
+    {
+		if(myui)
+			myui.PopupSkillSelect();
+    }
 
-	private void FixedUpdate()
+    private void FixedUpdate()
 	{
 		// Move Part
 		bool wasGrounded = isGround;
@@ -209,7 +215,7 @@ public class CubeController : MonoBehaviour
 	public void GetExp(float howmuch)
     {
 		Status mystat = GetComponent<Status>();
-		mystat.Exp += howmuch;
+		mystat.Exp += (howmuch / Level);
 
 		if (mystat.Exp > mystat.MaxExp)
         {
@@ -265,7 +271,14 @@ public class CubeController : MonoBehaviour
 		Status mystat = GetComponent<Status>();
 
 		mystat.Exp = 0;
-		Debug.Log("시간 멈추고 스킬 업글 창 띄우기 or 그냥 롤처럼 +띄우기");
+		Level += 1;
+		mystat.MaxHp += 100;
+		mystat.Hp = mystat.MaxHp;
+
+		if (gameObject.tag == "Player")
+			myui.PopupSkillSelect();
+
+
 	}
 
 

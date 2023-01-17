@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class Skill_QuickClipping : Skill
 {
+	private void Awake()
+	{
+		inform.Add("[E] Quick Clipping ");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 40 + 75% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 55 + 85% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 70 + 95% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 85 + 105% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 100 + 115% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
+	}
 	protected override IEnumerator Cast_()
     {
 		Rigidbody rb = GetComponent<Rigidbody>();

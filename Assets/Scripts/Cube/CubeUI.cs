@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class CubeUI : MonoBehaviour
 {
-    public Status PlayerCube;
+    public CubeController PlayerCube;
     public Image HpBar;
     public Image ExpBar;
 
@@ -17,9 +17,11 @@ public class CubeUI : MonoBehaviour
     public Text stagetext;
 
     public Image DieFadeScreen;
+
+    public GameObject SkillSelect;
     private void Awake()
     {
-        if (PlayerCube == null) PlayerCube = GameObject.Find("Cube").GetComponent<Status>();
+        if (PlayerCube == null) PlayerCube = GameObject.Find("Cube").GetComponent<CubeController>();
         if (HpBar == null) HpBar = transform.GetChild(1).GetComponent<Image>();
            
         dietext.text = "";
@@ -28,12 +30,18 @@ public class CubeUI : MonoBehaviour
     }
     void Hp_Update(float var)
     {
+        if (!PlayerCube) return;
+
+        Status mystatus = PlayerCube.GetComponent<Status>();
         //PlayerCube.Hp -= var;
-        HpBar.fillAmount = PlayerCube.Hp / PlayerCube.MaxHp;
+        HpBar.fillAmount = mystatus.Hp / mystatus.MaxHp;
     }
     void Exp_Update(float var)
     {
-        ExpBar.fillAmount = PlayerCube.Exp / PlayerCube.MaxExp;
+        if (!PlayerCube) return;
+
+        Status mystatus = PlayerCube.GetComponent<Status>();
+        ExpBar.fillAmount = mystatus.Exp / mystatus.MaxExp;
     }
 
     private void Update()
@@ -48,17 +56,17 @@ public class CubeUI : MonoBehaviour
         string text = "";
         /*
         if (LiveTime < 10)
-            text += "자살은 몸에 좋지 않아요..";
+            text += "";
         else if (LiveTime <= 30)
-            text += "너무 빠르다..! {0: 0.00}초..?";
+            text += "";
         else if (LiveTime <= 60)
-            text += "그래도 {0:0}초는 버텼네..";
+            text += "";
         else if (LiveTime <= 180)
-            text += "{0:0.00}초.. 좀 적응했구만?";
+            text += "";
         else if (LiveTime <= 360)
-            text += "{0:0.00}초. 뭐야 집중이야 꼼수야";
+            text += "";
         else
-            text += "잘하누, {0:0.00}초 버텼다 야.";
+            text += "";
         */
         text += "\n\n\n\n";
         text += "버틴 시간: {0:0.00}초";
@@ -70,6 +78,7 @@ public class CubeUI : MonoBehaviour
         stagetext.text = text;
         StartCoroutine("Hide");
     }
+    
     IEnumerator Hide()
     {
         RectTransform pos = stagetext.GetComponent<RectTransform>();
@@ -100,4 +109,113 @@ public class CubeUI : MonoBehaviour
     {
         StartCoroutine(FadeIn(0, 1));
     }
+    public void PopupSkillSelect()
+    {
+        SkillSelect.SetActive(true);
+        Time.timeScale = 0;
+
+        GameObject Q_Skill_UI = SkillSelect.transform.GetChild(1).GetChild(0).gameObject;
+        GameObject W_Skill_UI = SkillSelect.transform.GetChild(1).GetChild(1).gameObject;
+        GameObject E_Skill_UI = SkillSelect.transform.GetChild(1).GetChild(2).gameObject;
+        GameObject R_Skill_UI = SkillSelect.transform.GetChild(1).GetChild(3).gameObject;
+
+        GameObject ui;
+        Skill skill;
+        Text name;
+        Text inform;
+
+        // Q ui설정 
+        ui = Q_Skill_UI;
+        skill = PlayerCube.Skill_Q;
+        if (skill.inform.Count > skill.skill_Level + 1)
+        {
+            if (skill.skill_Level != 0)
+                ui.GetComponent<Image>().color += new Color(0, 0, 0, 1);
+            name = ui.transform.GetChild(0).GetComponent<Text>();
+            inform = ui.transform.GetChild(1).GetComponent<Text>();
+            name.text = skill.inform[0];
+            for (int i = 0; i < skill.skill_Level + 1; i++)
+                name.text += "l";
+            inform.text = skill.inform[skill.skill_Level + 1];
+        }else{ Q_Skill_UI.SetActive(false); }
+        // W ui 설정
+        ui = W_Skill_UI;
+        skill = PlayerCube.Skill_W;
+
+        if (skill.inform.Count > skill.skill_Level + 1)
+        {
+            if (skill.skill_Level != 0)
+                ui.GetComponent<Image>().color += new Color(0, 0, 0, 1);
+            name = ui.transform.GetChild(0).GetComponent<Text>();
+            inform = ui.transform.GetChild(1).GetComponent<Text>();
+            name.text = skill.inform[0];
+            for (int i = 0; i < skill.skill_Level + 1; i++)
+                name.text += "l";
+            inform.text = skill.inform[skill.skill_Level + 1];
+        }
+        else { W_Skill_UI.SetActive(false); }
+        // E ui 설정
+        ui = E_Skill_UI;
+        skill = PlayerCube.Skill_E;
+
+        if (skill.inform.Count > skill.skill_Level + 1)
+        {
+            if (skill.skill_Level != 0)
+                ui.GetComponent<Image>().color += new Color(0, 0, 0, 1);
+            name = ui.transform.GetChild(0).GetComponent<Text>();
+            inform = ui.transform.GetChild(1).GetComponent<Text>();
+            name.text = skill.inform[0];
+            for (int i = 0; i < skill.skill_Level + 1; i++)
+                name.text += "l";
+            inform.text = skill.inform[skill.skill_Level + 1];
+        }
+        else { E_Skill_UI.SetActive(false); }
+        // R ui 설정
+        ui = R_Skill_UI;
+        skill = PlayerCube.Skill_R;
+
+        if (skill.inform.Count > skill.skill_Level + 1)
+        {
+            if (skill.skill_Level != 0)
+                ui.GetComponent<Image>().color += new Color(0, 0, 0, 1);
+            name = ui.transform.GetChild(0).GetComponent<Text>();
+            inform = ui.transform.GetChild(1).GetComponent<Text>();
+            name.text = skill.inform[0];
+            for (int i = 0; i < skill.skill_Level + 1; i++)
+                name.text += "l";
+            inform.text = skill.inform[skill.skill_Level + 1];
+        }
+        else { R_Skill_UI.SetActive(false); }
+
+        if (!Q_Skill_UI.activeSelf && !W_Skill_UI.activeSelf && !E_Skill_UI.activeSelf && !R_Skill_UI.activeSelf)
+        {
+            SkillSelect.SetActive(false);
+            Time.timeScale = 1;
+        }
+    }
+    public void OnClick_first()
+    {
+        PlayerCube.GetComponent<CubeController>().Skill_Q.skill_Level += 1;
+        SkillSelect.SetActive(false);
+        Time.timeScale = 1;
+    }
+    public void OnClick_second()
+    {
+        PlayerCube.GetComponent<CubeController>().Skill_W.skill_Level += 1;
+        SkillSelect.SetActive(false);
+        Time.timeScale = 1;
+    }
+    public void OnClick_third()
+    {
+        PlayerCube.GetComponent<CubeController>().Skill_E.skill_Level += 1;
+        SkillSelect.SetActive(false);
+        Time.timeScale = 1;
+    }
+    public void OnClick_fourth()
+    {
+        PlayerCube.GetComponent<CubeController>().Skill_R.skill_Level += 1;
+        SkillSelect.SetActive(false);
+        Time.timeScale = 1;
+    }
+
 }
