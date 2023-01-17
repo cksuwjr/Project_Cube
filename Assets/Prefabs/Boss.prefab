@@ -221,6 +221,7 @@ MonoBehaviour:
   Skill_E: {fileID: 2503937986037906849}
   Skill_R: {fileID: 2503937986037906848}
   myui: {fileID: 0}
+  Level: 1
 --- !u!114 &2503937986037906856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +259,8 @@ MonoBehaviour:
   _Hp: 5000
   _AttackPower: 240
   _DeffensePower: 150
+  _MaxExp: 100
+  _Exp: 100
 --- !u!114 &2503937986037906862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +331,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e472f6751254eb8479307e89a2ebb4fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skill_Level: 5
+  cooltime: 0
+  inform: []
   Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
 --- !u!114 &2503937986037906850
 MonoBehaviour:
@@ -341,6 +347,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 259d6ac522516f0408952c3371a0ba24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skill_Level: 5
+  cooltime: 0
+  inform: []
 --- !u!114 &2503937986037906849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,6 +362,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cadfd7c4774a0f34c90d5d5cdc7df2df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skill_Level: 5
+  cooltime: 0
+  inform: []
 --- !u!114 &2503937986037906848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +377,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a9c43e2ff2589642b37dc97bc95f327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skill_Level: 5
+  cooltime: 0
+  inform: []
   Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
 --- !u!1 &2503937986124818716
 GameObject:

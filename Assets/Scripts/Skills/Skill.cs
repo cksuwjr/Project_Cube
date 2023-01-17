@@ -9,6 +9,9 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected float cooltime;
     protected float ReusableWaitTime;
     protected bool Castable;
+
+    public List<string> inform = new List<string>();
+
     protected void Start()
     {
         if (GetComponent<CubeController>())
@@ -51,5 +54,4 @@ public abstract class Skill : MonoBehaviour
         ReusableWaitTime = 0;
         Castable = true;
     }
-    
 }

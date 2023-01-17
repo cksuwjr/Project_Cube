@@ -18,7 +18,7 @@ public class EnemySpawner : MonoBehaviour
     public int Stage = 0;
 
     [SerializeField] private List<Vector2> SpawnMobCount;
-    
+    public GameObject danger;
 
     [Header("Infinity Mode")]
     public float SpawnTerm = 2;
@@ -50,6 +50,8 @@ public class EnemySpawner : MonoBehaviour
         while(count < howmany)
         {
             GameObject Spawned = Instantiate(Monster, transform.position, Quaternion.identity);
+            Spawned.GetComponent<Status>().MaxHp += ((Stage - 2) * 150);
+            Spawned.GetComponent<Status>().Hp = Spawned.GetComponent<Status>().MaxHp;
             Spawned.SetActive(true);
             count++;
             yield return new WaitForSeconds(SpawnTerm);
@@ -60,7 +62,7 @@ public class EnemySpawner : MonoBehaviour
             isAllSpawned_Boss = true;
 
         if (isAllSpawned_Enemy && isAllSpawned_Boss && cubeUI) { 
-            StartCoroutine(NextStage(5 + Stage));
+            StartCoroutine(NextStage(10 + Stage));
         }
     }
     IEnumerator NextStage(float time)
@@ -75,6 +77,11 @@ public class EnemySpawner : MonoBehaviour
             if (cubeUI)
                 cubeUI.PopupStageUI("Stage " + (Stage + 1));
             SpawnTerm = 3 - (Stage * 0.27f);
+            if (Stage == 4 || Stage == 6 || Stage == 8 || Stage == 10)
+                if (danger)
+                {
+                    Instantiate(danger, new Vector3(0, 1, 0), Quaternion.Euler(90,0,0)).SetActive(true);
+                }
 
             StartCoroutine(Spawn(Enemy, (int)SpawnMobCount[Stage].x));
             StartCoroutine(Spawn(Boss, (int)SpawnMobCount[Stage].y));
