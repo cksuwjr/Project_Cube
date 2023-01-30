@@ -16,6 +16,7 @@ public class EnemyAttack : Attack
     Color myColor;
 
     public bool isShootableEnemy = false;
+    public GameObject LandingRange;
 
     private void Start()
     {
@@ -26,7 +27,7 @@ public class EnemyAttack : Attack
     {
         SkillStart(myColor + new Color(0.3f, -0.15f, -0.15f));
         yield return new WaitForSeconds(delay);
-        controller.Attack(new Vector3(1, 1, 1));
+        controller.Attack(new Vector3(1, 1, 1), GetComponent<Status>().AttackPower);
         SkillEnd();
     }
     IEnumerator Shooting(float delay)
@@ -46,6 +47,13 @@ public class EnemyAttack : Attack
     {
         if (controller.isGround)
            GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, 0));
+
+
+        if (LandingRange)
+        {
+            GameObject Spawned = Instantiate(LandingRange, new Vector3(transform.position.x, 1.1f, transform.position.z), Quaternion.identity);
+            Destroy(Spawned, delay);
+        }
         yield return new WaitForSeconds(delay);
         controller.Skill(controller.Skill_W);
         SkillEnd();
@@ -92,19 +100,19 @@ public class EnemyAttack : Attack
 
         if (attack == null || attack == "") return;
 
-        if (attack == "BasicAttack" && isAttackAble)
+        if (attack == "BasicAttack" && isAttackAble && controller.IsActable)
         {
             StartCoroutine(Attack(0.45f));
         }
         
         if (isShootableEnemy)
-            if (attack == "ShootingAttack" && isAttackAble)
+            if (attack == "ShootingAttack" && isAttackAble && controller.IsActable)
                 StartCoroutine(Shooting(0.45f));
 
         
         //if (!move.isEnemybeInStraightLine && !isEnemyNear)
 
-        if (attack == "Random" && isShootableEnemy && isAttackAble)
+        if (attack == "Random" && isShootableEnemy && isAttackAble && controller.IsActable)
         {
             
             if (rand == 1 && controller.Skill_Q) {

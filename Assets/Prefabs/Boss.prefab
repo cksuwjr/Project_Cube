@@ -255,10 +255,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28dbd40d463f4cb41be70e99392f6047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _MaxHp: 5000
-  _Hp: 5000
-  _AttackPower: 240
-  _DeffensePower: 150
+  _MaxHp: 4000
+  _Hp: 4000
+  _AttackPower: 200
+  _DeffensePower: 100
   _MaxExp: 100
   _Exp: 100
 --- !u!114 &2503937986037906862
@@ -305,6 +305,7 @@ MonoBehaviour:
   isEnemyNear: 0
   isAttackAble: 1
   isShootableEnemy: 1
+  LandingRange: {fileID: 7705638790267538721, guid: a72c98f82f54fc5449a8f8a7f989f490, type: 3}
 --- !u!114 &2503937986037906867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,6 +319,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DamageSkin: {fileID: 1643027433382092732, guid: 229ef29870517c14ab9de27bead276eb, type: 3}
+  CriticalDamageSkin: {fileID: 1643027433382092732, guid: d45cab0985a7d90409ec30b535c56c35, type: 3}
   HealSkin: {fileID: 1643027433382092732, guid: 29e94b9a2bf126b43aa146b4360d8a37, type: 3}
 --- !u!114 &2503937986037906855
 MonoBehaviour:
@@ -333,6 +335,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skill_Level: 5
   cooltime: 0
+  cooltimeBox: {fileID: 0}
+  cooltimeText: {fileID: 0}
   inform: []
   Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
 --- !u!114 &2503937986037906850
@@ -349,6 +353,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skill_Level: 5
   cooltime: 0
+  cooltimeBox: {fileID: 0}
+  cooltimeText: {fileID: 0}
   inform: []
 --- !u!114 &2503937986037906849
 MonoBehaviour:
@@ -364,6 +370,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skill_Level: 5
   cooltime: 0
+  cooltimeBox: {fileID: 0}
+  cooltimeText: {fileID: 0}
   inform: []
 --- !u!114 &2503937986037906848
 MonoBehaviour:
@@ -379,6 +387,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skill_Level: 5
   cooltime: 0
+  cooltimeBox: {fileID: 0}
+  cooltimeText: {fileID: 0}
   inform: []
   Bullet: {fileID: 8608467351450840917, guid: 8df5d28a47d8f1746a90cb4caebb332b, type: 3}
 --- !u!1 &2503937986124818716

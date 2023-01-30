@@ -247,6 +247,7 @@ MonoBehaviour:
   Skill_E: {fileID: 0}
   Skill_R: {fileID: 0}
   myui: {fileID: 0}
+  Level: 0
 --- !u!114 &6882410355316219629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,6 +285,8 @@ MonoBehaviour:
   _Hp: 500
   _AttackPower: 70
   _DeffensePower: 20
+  _MaxExp: 100
+  _Exp: 100
 --- !u!114 &6882410355316219628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,4 +344,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DamageSkin: {fileID: 1643027433382092732, guid: 229ef29870517c14ab9de27bead276eb, type: 3}
+  CriticalDamageSkin: {fileID: 1643027433382092732, guid: d45cab0985a7d90409ec30b535c56c35, type: 3}
   HealSkin: {fileID: 1643027433382092732, guid: 29e94b9a2bf126b43aa146b4360d8a37, type: 3}

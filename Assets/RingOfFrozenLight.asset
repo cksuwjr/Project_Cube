@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e7bb72d6a12f943aaaa94078c3cb0c, type: 3}
+  m_Name: RingOfFrozenLight
+  m_EditorClassIdentifier: 
+  itemName: "\uC5BC\uC5B4\uBD99\uC740 \uBE5B\uC758 \uBC18\uC9C0"
+  itemType: 0
+  itemImage: {fileID: 21300000, guid: fc106db325c19e94fba2cd09e42266f7, type: 3}
+  itemPrefab: {fileID: 0}
+  AttackPower: 0
+  MagicPower: 100
