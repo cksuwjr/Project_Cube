@@ -36,8 +36,8 @@ public class CubeController : MonoBehaviour
 
 	// Attack Part
 
-	[SerializeField] private LayerMask WhatIsEnemy;
-	[SerializeField] private Transform AttackPos;
+	[SerializeField] public LayerMask WhatIsEnemy;
+	[SerializeField] public Transform AttackPos;
 
 	[SerializeField] private GameObject RecentAttacker;
 
@@ -51,7 +51,7 @@ public class CubeController : MonoBehaviour
 	[SerializeField] private CubeUI myui;
 
 	// Level
-	public int Level = 1;
+	public int Level = 0;
 
 
 	[System.Serializable]
@@ -73,8 +73,12 @@ public class CubeController : MonoBehaviour
 	}
     private void Start()
     {
-		if(myui)
-			myui.PopupSkillSelect();
+		//
+		//if(myui)
+		//	myui.PopupSkillSelect();
+
+		if (Level == 0)
+			LevelUp();
     }
 
     private void FixedUpdate()
@@ -128,7 +132,7 @@ public class CubeController : MonoBehaviour
 		
 
 		// If the player should jump...
-		if (isGround && jump)
+		if (isGround && jump && (Skill_W.skill_Level > 0))
 		{
 			// Add a vertical force to the player.
 			isGround = false;
@@ -137,7 +141,7 @@ public class CubeController : MonoBehaviour
 	}
 
 	// ============================ 공격 범위 생성 및 적용 ===============================
-	public void Attack(Vector3 attacksize, float attackdamage = -1, string isFront = "Front", string CC = "None", float howmuch = 0, string isAllAttack = "No") // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
+	public void Attack(Vector3 attacksize, float attackdamage = -1, string isFront = "Front", float CriticalProbablity = 0, float CriticalDamageMagnification = 2, string CC = "None", float howmuch = 0, string isAllAttack = "No") // 공격 크기 (1, 1, 길이), 데미지, 앞이냐 뒤냐(ex 지나간자리)
     {
 		Vector3 attackPos;
 		if (isFront == "Front")
@@ -148,6 +152,7 @@ public class CubeController : MonoBehaviour
 			attackPos = AttackPos.position;
 		//attackPos = isFront ? AttackPos.position + new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z) : AttackPos.position - new Vector3(((attacksize.z - 1) / 2 * direction.x), 0, ((attacksize.z - 1) / 2) * direction.z);
 		Collider[] colliders = Physics.OverlapBox(attackPos, attacksize / 2, transform.rotation, WhatIsEnemy);
+		
 		if (isAllAttack == "Yes") colliders = Physics.OverlapBox(attackPos, attacksize / 2, transform.rotation, ((1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Enemy"))));
 		for (int i = 0; i < colliders.Length; i++)
 		{
@@ -165,14 +170,14 @@ public class CubeController : MonoBehaviour
                 {
                     Hit hit = Deffender.GetComponent<Hit>();
 					float Damage;
-					if (attackdamage == -1) 
-						Damage = attackComponent.CalcDamage(gameObject, Deffender);
-					else 
-						Damage = attackdamage;
+					Damage = attackComponent.CalcDamage(attackdamage, Deffender);
 
 					if (hit.isHitTarget())
 					{
-						hit.OnHit(gameObject, Damage, false);
+						float probablity = Random.Range(0, 100);
+						bool isCritical = probablity < CriticalProbablity ? true : false;
+						hit.OnHit(gameObject, Damage, isCritical, CriticalDamageMagnification);
+						Deffender.GetComponent<CubeController>().KnockBack(gameObject, 5f);
 						if (CC == "AirBorned")
 						{
 							Deffender.GetComponent<CubeController>().AirBorned(howmuch);
@@ -217,7 +222,7 @@ public class CubeController : MonoBehaviour
 		Status mystat = GetComponent<Status>();
 		mystat.Exp += (howmuch / Level);
 
-		if (mystat.Exp > mystat.MaxExp)
+		if (mystat.Exp >= mystat.MaxExp)
         {
 			float excess = mystat.Exp - mystat.MaxExp;
 			LevelUp();
@@ -225,12 +230,12 @@ public class CubeController : MonoBehaviour
         }
 
 	}
-	public void GetDamage(float damage, GameObject fromwho = null)
+	public void GetDamage(float damage, GameObject fromwho = null, bool isCritical = false)
     {
 		Status mystat = GetComponent<Status>();
 
 		mystat.Hp -= damage;
-		GetComponent<DamageSpawner>().Spawn(-damage);
+		GetComponent<DamageSpawner>().Spawn(-damage, isCritical);
 
 		RecentAttacker = fromwho;
 
@@ -251,15 +256,23 @@ public class CubeController : MonoBehaviour
     {
 		if (myui != null)
 		{
-			for(int i = 0; i < myui.transform.childCount; i++)
-				myui.transform.GetChild(i).gameObject.SetActive(false);
+			
 			myui.PopupDieUI();
 		}
 		if (RecentAttacker)
 		{
-			RecentAttacker.GetComponent<CubeController>().GetHeal(50);
-			RecentAttacker.GetComponent<CubeController>().PowerUp(3);
-			RecentAttacker.GetComponent<CubeController>().GetExp(50);
+			CubeController attacker = RecentAttacker.GetComponent<CubeController>();
+			attacker.GetHeal(45 + 5 * (attacker.Level));
+			attacker.PowerUp(3);
+			attacker.GetExp(125);
+			if(attacker.myui)
+				attacker.myui.SetAttackPowerText((int)attacker.GetComponent<Status>().AttackPower);
+			if (attacker.Skill_E)
+				if(attacker.Skill_E.skill_Level > 0)
+					attacker.Skill_E.CooltimeDecline(10);
+			if (attacker.Skill_R)
+				if (attacker.Skill_R.skill_Level > 0)
+					attacker.Skill_R.CooltimeDecline(attacker.Skill_R.skill_Level * 0.5f);
 		}
 		Destroy(gameObject);
     }
@@ -274,9 +287,15 @@ public class CubeController : MonoBehaviour
 		Level += 1;
 		mystat.MaxHp += 100;
 		mystat.Hp = mystat.MaxHp;
-
-		if (gameObject.tag == "Player")
+		mystat.DeffensePower += 1;
+		if (myui)
+		{
+			myui.SetLevelText(Level);
+			//myui.SetAttackPowerText((int)mystat.AttackPower);
+			myui.SetDeffensePowerText((int)mystat.DeffensePower);
+			myui.SetHealPowerText((int)(45 + 5 * Level));
 			myui.PopupSkillSelect();
+		}
 
 
 	}

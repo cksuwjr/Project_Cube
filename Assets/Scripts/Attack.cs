@@ -43,10 +43,11 @@ public class Attack : MonoBehaviour
             controller.R();
         attack = "";
     }
-    public float CalcDamage(GameObject attacker, GameObject deffender)
+    public float CalcDamage(float damage, GameObject deffender)
     {
-        
-        return attacker.GetComponent<Status>().AttackPower - (attacker.GetComponent<Status>().AttackPower * (deffender.GetComponent<Status>().DeffensePower / (100 + deffender.GetComponent<Status>().DeffensePower)));
+        //Debug.Log("원데미지: " + damage + "적용데미지: " + (damage - (damage * (deffender.GetComponent<Status>().DeffensePower / (100 + deffender.GetComponent<Status>().DeffensePower)))));
+
+        return damage - (damage * (deffender.GetComponent<Status>().DeffensePower / (100 + deffender.GetComponent<Status>().DeffensePower)));
 
 
     }

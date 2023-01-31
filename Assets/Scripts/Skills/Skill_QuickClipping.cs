@@ -7,11 +7,11 @@ public class Skill_QuickClipping : Skill
 	private void Awake()
 	{
 		inform.Add("[E] Quick Clipping ");
-		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 40 + 75% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
-		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 55 + 85% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
-		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 70 + 95% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
-		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 85 + 105% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
-		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 100 + 115% 공격력의 피해를 입습니다.\n\n쿨타임 : 2초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 100% 공격력의 피해를 입습니다. 처치시 쿨타임이 초기화됩니다.\n\n쿨타임 : 10초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 135% 공격력의 피해를 입습니다. 처치시 쿨타임이 초기화됩니다.\n\n쿨타임 : 10초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 170% 공격력의 피해를 입습니다. 처치시 쿨타임이 초기화됩니다.\n\n쿨타임 : 10초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 205% 공격력의 피해를 입습니다. 처치시 쿨타임이 초기화됩니다.\n\n쿨타임 : 10초");
+		inform.Add("해당 방향으로 일정거리 돌진하며 돌진 거리 사이의 적은 모두 240% 공격력의 피해를 입습니다. 처치시 쿨타임이 초기화됩니다.\n\n쿨타임 : 10초");
 	}
 	protected override IEnumerator Cast_()
     {
@@ -37,8 +37,8 @@ public class Skill_QuickClipping : Skill
 
 
 		// 지나간 공간에 존재하는 적 공격
-		float basic_Attack_Damage = 25 + 15 * skill_Level;
-		float Attack_coefficient = 0.65f + (0.1f * skill_Level);
+		float basic_Attack_Damage = 0 + 0 * skill_Level;
+		float Attack_coefficient = 0.65f + (0.35f * skill_Level);
 
 		controller.Attack(new Vector3(1, 1, Vector3.Distance(nowPos, afterPos)), basic_Attack_Damage + GetComponent<Status>().AttackPower * Attack_coefficient, "Back");
 

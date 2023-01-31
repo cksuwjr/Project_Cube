@@ -9,8 +9,11 @@ public class Hit : MonoBehaviour
     {
         return isHittable;
     }
-    public void OnHit(GameObject attacker, float damage, bool isCritical)
+    public void OnHit(GameObject attacker, float damage, bool isCritical, float magnification = 2)
     {
-        GetComponent<CubeController>().GetDamage(damage, attacker);
+        if (isCritical)
+            GetComponent<CubeController>().GetDamage(damage * magnification, attacker, true);
+        else
+            GetComponent<CubeController>().GetDamage(damage, attacker);
     }
 }

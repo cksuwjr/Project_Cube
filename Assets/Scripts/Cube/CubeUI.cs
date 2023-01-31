@@ -19,6 +19,11 @@ public class CubeUI : MonoBehaviour
     public Image DieFadeScreen;
 
     public GameObject SkillSelect;
+
+    public GameObject Space;
+
+    public GameObject PlayerHPBar;
+
     private void Awake()
     {
         if (PlayerCube == null) PlayerCube = GameObject.Find("Cube").GetComponent<CubeController>();
@@ -26,7 +31,7 @@ public class CubeUI : MonoBehaviour
            
         dietext.text = "";
 
-        PopupStageUI("Stage 1");
+        //PopupStageUI("Stage 1");
     }
     void Hp_Update(float var)
     {
@@ -35,6 +40,7 @@ public class CubeUI : MonoBehaviour
         Status mystatus = PlayerCube.GetComponent<Status>();
         //PlayerCube.Hp -= var;
         HpBar.fillAmount = mystatus.Hp / mystatus.MaxHp;
+        SetHealthText((int)mystatus.Hp);
     }
     void Exp_Update(float var)
     {
@@ -49,10 +55,19 @@ public class CubeUI : MonoBehaviour
         LiveTime += Time.deltaTime;
         Hp_Update(0);
         Exp_Update(0);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Time.timeScale = 0;
+            Space.SetActive(true);
+        }
     }
 
     public void PopupDieUI()
     {
+
+        PlayerHPBar.SetActive(false);
+
         string text = "";
         /*
         if (LiveTime < 10)
@@ -82,11 +97,11 @@ public class CubeUI : MonoBehaviour
     IEnumerator Hide()
     {
         RectTransform pos = stagetext.GetComponent<RectTransform>();
-        pos.localPosition = new Vector3(0,5,0);
+        pos.localPosition = new Vector3(0,300,0);
         float timer = 0;
-        while(timer < 1.2f)
+        while(timer < 3f)
         {
-            pos.localPosition = new Vector3(0, 5 + timer, 0);
+            pos.localPosition = new Vector3(0, 300 + (timer * 30f), 0);
             timer += Time.deltaTime;
             yield return null;
         }
@@ -103,7 +118,7 @@ public class CubeUI : MonoBehaviour
             fade += 0.01f;
             yield return new WaitForSeconds(0.01f);
         }
-        SceneManager.LoadScene("Start");
+        SceneManager.LoadScene("Menu");
     }
     void ReStart()
     {
@@ -134,8 +149,12 @@ public class CubeUI : MonoBehaviour
             name = ui.transform.GetChild(0).GetComponent<Text>();
             inform = ui.transform.GetChild(1).GetComponent<Text>();
             name.text = skill.inform[0];
+
+            name.text += "<color=#FF0000>";
             for (int i = 0; i < skill.skill_Level + 1; i++)
                 name.text += "l";
+            name.text += "</color>";
+
             inform.text = skill.inform[skill.skill_Level + 1];
         }else{ Q_Skill_UI.SetActive(false); }
         // W ui ¼³Á¤
@@ -149,8 +168,12 @@ public class CubeUI : MonoBehaviour
             name = ui.transform.GetChild(0).GetComponent<Text>();
             inform = ui.transform.GetChild(1).GetComponent<Text>();
             name.text = skill.inform[0];
+
+            name.text += "<color=#FF0000>";
             for (int i = 0; i < skill.skill_Level + 1; i++)
                 name.text += "l";
+            name.text += "</color>";
+
             inform.text = skill.inform[skill.skill_Level + 1];
         }
         else { W_Skill_UI.SetActive(false); }
@@ -165,8 +188,12 @@ public class CubeUI : MonoBehaviour
             name = ui.transform.GetChild(0).GetComponent<Text>();
             inform = ui.transform.GetChild(1).GetComponent<Text>();
             name.text = skill.inform[0];
+
+            name.text += "<color=#FF0000>";
             for (int i = 0; i < skill.skill_Level + 1; i++)
                 name.text += "l";
+            name.text += "</color>";
+
             inform.text = skill.inform[skill.skill_Level + 1];
         }
         else { E_Skill_UI.SetActive(false); }
@@ -181,8 +208,12 @@ public class CubeUI : MonoBehaviour
             name = ui.transform.GetChild(0).GetComponent<Text>();
             inform = ui.transform.GetChild(1).GetComponent<Text>();
             name.text = skill.inform[0];
+
+            name.text += "<color=#FF0000>";
             for (int i = 0; i < skill.skill_Level + 1; i++)
                 name.text += "l";
+            name.text += "</color>";
+
             inform.text = skill.inform[skill.skill_Level + 1];
         }
         else { R_Skill_UI.SetActive(false); }
@@ -193,29 +224,84 @@ public class CubeUI : MonoBehaviour
             Time.timeScale = 1;
         }
     }
+    public Text levelText;
+    public Text attackpowerText;
+    public Text deffensepowerText;
+    public Text healthText;
+    public Text healpowerText;
+    public void SetLevelText(int value)
+    {
+        levelText.text = value.ToString();
+    }
+    public void SetAttackPowerText(int value)
+    {
+        attackpowerText.text = value.ToString();
+    }
+    public void SetDeffensePowerText(int value)
+    {
+        deffensepowerText.text = value.ToString();
+    }
+    public void SetHealthText(int value)
+    {
+        healthText.text = value.ToString();
+    }
+    public void SetHealPowerText(int value)
+    {
+        healpowerText.text = value.ToString();
+    }
     public void OnClick_first()
     {
-        PlayerCube.GetComponent<CubeController>().Skill_Q.skill_Level += 1;
+        Skill skill = PlayerCube.GetComponent<CubeController>().Skill_Q;
+        skill.skill_Level += 1;
+        if (skill.skill_Level == 1)
+            skill.CooltimeUI(0, 0);
         SkillSelect.SetActive(false);
         Time.timeScale = 1;
     }
     public void OnClick_second()
     {
-        PlayerCube.GetComponent<CubeController>().Skill_W.skill_Level += 1;
+        Skill skill = PlayerCube.GetComponent<CubeController>().Skill_W;
+        skill.skill_Level += 1;
+        if (skill.skill_Level == 1)
+            skill.CooltimeUI(0, 0);
         SkillSelect.SetActive(false);
         Time.timeScale = 1;
     }
     public void OnClick_third()
     {
-        PlayerCube.GetComponent<CubeController>().Skill_E.skill_Level += 1;
+        Skill skill = PlayerCube.GetComponent<CubeController>().Skill_E;
+        skill.skill_Level += 1;
+        if (skill.skill_Level == 1)
+            skill.CooltimeUI(0, 0);
         SkillSelect.SetActive(false);
         Time.timeScale = 1;
     }
     public void OnClick_fourth()
     {
-        PlayerCube.GetComponent<CubeController>().Skill_R.skill_Level += 1;
+        Skill skill = PlayerCube.GetComponent<CubeController>().Skill_R;
+        skill.skill_Level += 1;
+        if (skill.skill_Level == 1)
+            skill.CooltimeUI(0, 0);
         SkillSelect.SetActive(false);
         Time.timeScale = 1;
+    }
+
+    public void OnClick_Resume()
+    {
+        Space.SetActive(false);
+        if (!SkillSelect.activeSelf)
+            Time.timeScale = 1;
+    }
+
+    public void OnClick_Restart()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void OnClick_BacktoMenu()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Menu");
     }
 
 }

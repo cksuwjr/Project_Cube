@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class CAM : MonoBehaviour
 {
@@ -14,10 +13,5 @@ public class CAM : MonoBehaviour
             transform.position = Target.transform.position;
 
         
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F5))
-            SceneManager.LoadScene("SampleScene");
     }
 }
