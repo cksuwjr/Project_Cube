@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CubeController : MonoBehaviour
+public class CubeController : PoolObject
 {
 
 	// Move Part

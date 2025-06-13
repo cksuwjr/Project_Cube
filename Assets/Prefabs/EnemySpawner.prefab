@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1974137109046319232}
   - component: {fileID: 1974137109046319233}
+  - component: {fileID: 6387361993633172857}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -24,12 +25,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974137109046319234}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -23, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4674241932726750946}
+  - {fileID: 3951661290171787106}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1974137109046319233
 MonoBehaviour:
@@ -43,23 +47,130 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b9cd816e70212246ada0e83e6b4531f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enemy: {fileID: 6882410355316219621, guid: fbfcf2bb283113843bc5cfd36f58af17, type: 3}
-  Boss: {fileID: 2503937986037906866, guid: 17420512edf14234c8dc985753a707eb, type: 3}
   cubeUI: {fileID: 0}
   mode: 0
   Stage: 0
   SpawnMobCount:
+  - {x: 0, y: 0, z: 0, w: 0}
   - {x: 1, y: 0, z: 0, w: 0}
   - {x: 3, y: 0, z: 0, w: 0}
-  - {x: 5, y: 1, z: 0, w: 0}
+  - {x: 5, y: 0, z: 0, w: 0}
   - {x: 15, y: 1, z: 0, w: 0}
-  - {x: 25, y: 2, z: 0, w: 0}
+  - {x: 30, y: 1, z: 0, w: 0}
   - {x: 30, y: 5, z: 0, w: 0}
-  - {x: 0, y: 10, z: 0, w: 0}
-  - {x: 0, y: 20, z: 0, w: 0}
-  - {x: 0, y: 50, z: 0, w: 0}
+  - {x: 30, y: 10, z: 0, w: 0}
+  - {x: 1, y: 20, z: 0, w: 0}
+  - {x: 100, y: 0, z: 0, w: 0}
+  - {x: 100, y: 50, z: 0, w: 0}
+  - {x: 100, y: 100, z: 0, w: 0}
   - {x: 0, y: 10000, z: 0, w: 0}
-  danger: {fileID: 0}
+  danger: {fileID: 5487520154545229912, guid: 3e4def9dccfbfc343935fa4c92732079, type: 3}
   SpawnTerm: 3
   FasterSpeed: 0
   FasterSpawn: 0
+--- !u!114 &6387361993633172857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1974137109046319234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8f6ebf35573c9b47af76f120eecd281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPool: {fileID: 6010460930506458958}
+  bossPool: {fileID: 7988200830010019942}
+--- !u!1 &3075605031806069522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3951661290171787106}
+  - component: {fileID: 7988200830010019942}
+  m_Layer: 0
+  m_Name: BossPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3951661290171787106
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3075605031806069522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1974137109046319232}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7988200830010019942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3075605031806069522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 492306173436b9e4caa62970e640c00c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolObject: {fileID: 0}
+  poolCount: 5
+--- !u!1 &7169551166181631377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4674241932726750946}
+  - component: {fileID: 6010460930506458958}
+  m_Layer: 0
+  m_Name: EnemyPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4674241932726750946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169551166181631377}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1974137109046319232}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6010460930506458958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169551166181631377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 492306173436b9e4caa62970e640c00c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolObject: {fileID: 0}
+  poolCount: 5
