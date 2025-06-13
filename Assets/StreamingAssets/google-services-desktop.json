@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "963317314636",
+    "project_id": "cubebreaker-1d5f0",
+    "storage_bucket": "cubebreaker-1d5f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963317314636:android:613c125a4ea717a498f0e9",
+        "android_client_info": {
+          "package_name": "com.DK.CubeBreaker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVob6p6h3Win1m4WwwgVIoB88BkGczMFk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

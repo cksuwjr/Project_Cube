@@ -1,12 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject Enemy;
-    public GameObject Boss;
-
     public CubeUI cubeUI;
     private enum Mode {
         StageMode,
@@ -17,7 +16,6 @@ public class EnemySpawner : MonoBehaviour
     [Header("Stage Mode")]
     public int Stage = 0;
 
-    [SerializeField] private List<Vector4> SpawnMobCount;
     public GameObject danger;
 
     [Header("Infinity Mode")]
@@ -26,82 +24,89 @@ public class EnemySpawner : MonoBehaviour
     public float FasterSpeed = 0f;
     public float FasterSpawn = 1f;
 
-    bool isAllSpawned_Enemy = false;
-    bool isAllSpawned_Boss = false;
+    private void Start()
+    {
+        Invoke("Init", 1);
+        //Init();
+    }
 
-
-    static GameObject Spawned;
-
-    void Start()
+    public void Init()
     {
         if (mode == Mode.StageMode)
+            NextStage();
+    }
+
+
+    private void SpawnEnemy(Vector3 position)
+    {
+        GameObject spawned = PoolManager.Instance.enemyPool.GetPoolObject();
+        spawned.transform.position = position;
+        spawned.GetComponent<Status>().MaxHp += ((Stage - 4) * 150);
+        spawned.GetComponent<Status>().Hp = spawned.GetComponent<Status>().MaxHp;
+        spawned.SetActive(true);
+    }
+
+    private void SpawnBoss(Vector3 position)
+    {
+        GameObject spawned = PoolManager.Instance.bossPool.GetPoolObject();
+        spawned.transform.position = position;
+        spawned.GetComponent<Status>().MaxHp += ((Stage - 4) * 150);
+        spawned.GetComponent<Status>().Hp = spawned.GetComponent<Status>().MaxHp;
+        spawned.SetActive(true);
+
+        if ((Stage - 4) > 0)
         {
-            StartCoroutine(NextStage(1));
-            //StartCoroutine(Spawn(Enemy, (int)SpawnMobCount[Stage].x));
-            //StartCoroutine(Spawn(Boss, (int)SpawnMobCount[Stage].y));
+            if ((Stage - 4) < 5)
+            {
+                spawned.GetComponent<CubeController>().Skill_Q.skill_Level = Stage - 4;
+                spawned.GetComponent<CubeController>().Skill_W.skill_Level = Stage - 4;
+                spawned.GetComponent<CubeController>().Skill_E.skill_Level = Stage - 4;
+                spawned.GetComponent<CubeController>().Skill_R.skill_Level = Stage - 4;
+            }
+            else
+            {
+                spawned.GetComponent<CubeController>().Skill_Q.skill_Level = 5;
+                spawned.GetComponent<CubeController>().Skill_W.skill_Level = 5;
+                spawned.GetComponent<CubeController>().Skill_E.skill_Level = 5;
+                spawned.GetComponent<CubeController>().Skill_R.skill_Level = 5;
+            }
         }
     }
-    IEnumerator Spawn(GameObject Monster, int howmany)
+
+    IEnumerator StageSpawn()
     {
-        if (Monster == Enemy)
-            isAllSpawned_Enemy = false;
-        if (Monster == Boss)
-            isAllSpawned_Boss = false;
         int count = 0;
-        while(count < howmany)
+        StageData stageData = DataManager.Instance.GetStageData(Stage - 1);
+
+
+        while (count < stageData.enemyCount || count < stageData.bossCount)
         {
-            GameObject Spawned = Instantiate(Monster, transform.position, Quaternion.identity);
-            Spawned.GetComponent<Status>().MaxHp += ((Stage - 4) * 150);
-            Spawned.GetComponent<Status>().Hp = Spawned.GetComponent<Status>().MaxHp;
-            if (Monster == Boss)
+            Debug.Log(stageData.stage + "stage : " + stageData.enemyCount);
+            if (count < stageData.enemyCount)
             {
-                if ((Stage - 4) > 0)
-                {
-                    if ((Stage - 4) < 5)
-                    {
-                        Spawned.GetComponent<CubeController>().Skill_Q.skill_Level = Stage - 4;
-                        Spawned.GetComponent<CubeController>().Skill_W.skill_Level = Stage - 4;
-                        Spawned.GetComponent<CubeController>().Skill_E.skill_Level = Stage - 4;
-                        Spawned.GetComponent<CubeController>().Skill_R.skill_Level = Stage - 4;
-                    }
-                    else
-                    {
-                        Spawned.GetComponent<CubeController>().Skill_Q.skill_Level = 5;
-                        Spawned.GetComponent<CubeController>().Skill_W.skill_Level = 5;
-                        Spawned.GetComponent<CubeController>().Skill_E.skill_Level = 5;
-                        Spawned.GetComponent<CubeController>().Skill_R.skill_Level = 5;
-                    }
-                }
-                else {
-                    Spawned.GetComponent<CubeController>().Skill_Q.skill_Level = 1;
-                    Spawned.GetComponent<CubeController>().Skill_W.skill_Level = 1;
-                    Spawned.GetComponent<CubeController>().Skill_E.skill_Level = 1;
-                    Spawned.GetComponent<CubeController>().Skill_R.skill_Level = 1;
-                }
+                for(int i = 0; i < 4; i++)
+                    SpawnEnemy(GetSpawnPosition());
+
+            }
+            if (count < stageData.bossCount)
+            {
+                for (int i = 0; i < 4; i++)
+                    SpawnBoss(GetSpawnPosition());
             }
 
-
-
-            Spawned.SetActive(true);
             count++;
-            yield return new WaitForSeconds(SpawnTerm);
+            yield return YieldInstructionCache.WaitForSeconds(SpawnTerm);
         }
-        if (Monster == Enemy)
-            isAllSpawned_Enemy = true;
-        if (Monster == Boss)
-            isAllSpawned_Boss = true;
 
-        if (isAllSpawned_Enemy && isAllSpawned_Boss && cubeUI) { 
-            StartCoroutine(NextStage(10 + Stage));
-        }
+        yield return YieldInstructionCache.WaitForSeconds(10 + Stage);
+
+        NextStage();
     }
-    IEnumerator NextStage(float time)
+
+    private void NextStage()
     {
-        yield return new WaitForSeconds(time);
-
-        if (Stage < SpawnMobCount.Count)
+        if (Stage < DataManager.Instance.GetStageCount())
         {
-
             Stage++;
             Debug.Log("현재 스테이지 " + (Stage));
             if (cubeUI)
@@ -115,8 +120,7 @@ public class EnemySpawner : MonoBehaviour
                     Instantiate(danger, new Vector3(0, 1, 0), Quaternion.Euler(90,0,0)).SetActive(true);
                 }
 
-            StartCoroutine(Spawn(Enemy, (int)SpawnMobCount[Stage].x));
-            StartCoroutine(Spawn(Boss, (int)SpawnMobCount[Stage].y));
+            StartCoroutine("StageSpawn");
         }
         else
         {
@@ -124,5 +128,29 @@ public class EnemySpawner : MonoBehaviour
                 cubeUI.PopupStageUI("Stage All Clear!!!");
         }
 
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        //var player = GameManager.Instance.Player;
+
+        var n = Mathf.Pow(-1, Random.Range(0, 2));
+
+        //Vector3 spawnPos = player.transform.position;
+        Vector3 spawnPos = Vector3.zero;
+
+        spawnPos.y = 1;
+
+        if (n == -1)
+        { // horizon
+            spawnPos.x += Random.Range(-23f, 23f);
+            spawnPos.z += 23f * Mathf.Pow(-1, Random.Range(0, 2));
+        }
+        if (n == 1)
+        { // vertical
+            spawnPos.x += 23f * Mathf.Pow(-1, Random.Range(0, 2));
+            spawnPos.z += Random.Range(-23f, 23f);
+        }
+        return spawnPos;
     }
 }
